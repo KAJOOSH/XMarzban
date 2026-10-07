@@ -1,7 +1,12 @@
 import atexit
+import base64
+import os
+import json
+import secrets
 import re
 import subprocess
 import threading
+import time
 from collections import deque
 from contextlib import contextmanager
 
@@ -19,6 +24,7 @@ class XRayCore:
 
         self.version = self.get_version()
         self.process = None
+        self._tun_names = set()
         self.restarting = False
 
         self._logs_buffer = deque(maxlen=100)
@@ -39,22 +45,17 @@ class XRayCore:
             return m.groups()[0]
 
     def get_x25519(self, private_key: str = None):
-        cmd = [self.executable_path, "x25519"]
-        if private_key:
-            cmd.extend(['-i', private_key])
-        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode('utf-8')
-        m = re.match(r'Private key: (.+)\nPublic key: (.+)', output)
-        if m:
-            private, public = m.groups()
-            return {
-                "private_key": private,
-                "public_key": public
-            }
+        from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
+        key = (X25519PrivateKey.from_private_bytes(base64.urlsafe_b64decode(private_key + "=" * (-len(private_key) % 4)))
+               if private_key else X25519PrivateKey.generate())
+        return {"private_key": base64.urlsafe_b64encode(key.private_bytes_raw()).decode().rstrip("="),
+                "public_key": base64.urlsafe_b64encode(key.public_key().public_bytes_raw()).decode().rstrip("=")}
 
     def __capture_process_logs(self):
+        process = self.process
         def capture_and_debug_log():
-            while self.process:
-                output = self.process.stdout.readline()
+            while process:
+                output = process.stdout.readline()
                 if output:
                     output = output.strip()
                     self._logs_buffer.append(output)
@@ -62,19 +63,19 @@ class XRayCore:
                         buf.append(output)
                     logger.debug(output)
 
-                elif not self.process or self.process.poll() is not None:
+                elif process.poll() is not None:
                     break
 
         def capture_only():
-            while self.process:
-                output = self.process.stdout.readline()
+            while process:
+                output = process.stdout.readline()
                 if output:
                     output = output.strip()
                     self._logs_buffer.append(output)
                     for buf in list(self._temp_log_buffers.values()):
                         buf.append(output)
 
-                elif not self.process or self.process.poll() is not None:
+                elif process.poll() is not None:
                     break
 
         if DEBUG:
@@ -103,6 +104,22 @@ class XRayCore:
 
         return False
 
+    def validate(self, config: XRayConfig):
+        payload = json.loads(config.to_json())
+        # Xray -test opens TUN devices; the running core already owns its name.
+        aliases = {}
+        for inbound in payload.get("inbounds", []):
+            name = inbound.get("settings", {}).get("name")
+            if (inbound.get("protocol") == "tun" and self.started
+                    and isinstance(name, str) and name in self._tun_names):
+                aliases.setdefault(name, "mbcheck" + secrets.token_hex(3))
+                inbound["settings"]["name"] = aliases[name]
+        result = subprocess.run([self.executable_path, "run", "-test", "-config", "stdin:"],
+                                input=json.dumps(payload), capture_output=True, text=True,
+                                env={**os.environ, **self._env}, timeout=30)
+        if result.returncode:
+            raise ValueError((result.stdout + result.stderr).strip())
+
     def start(self, config: XRayConfig):
         if self.started is True:
             raise RuntimeError("Xray is started already")
@@ -118,18 +135,31 @@ class XRayCore:
         ]
         self.process = subprocess.Popen(
             cmd,
-            env=self._env,
+            env={**os.environ, **self._env},
             stdin=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             stdout=subprocess.PIPE,
             universal_newlines=True
         )
         self.process.stdin.write(config.to_json())
         self.process.stdin.flush()
         self.process.stdin.close()
-        logger.warning(f"Xray core {self.version} started")
-
         self.__capture_process_logs()
+        from xray_api import XRay
+        api = XRay(config.api_host, config.api_port)
+        deadline = time.monotonic() + 15
+        while True:
+            try:
+                api.get_sys_stats(timeout=1)
+                break
+            except Exception as exc:
+                if not self.started or time.monotonic() >= deadline:
+                    self.stop()
+                    raise RuntimeError("Xray failed to become ready: " + "\n".join(self._logs_buffer)) from exc
+                time.sleep(.1)
+        self._tun_names = {i.get("settings", {}).get("name")
+                           for i in config.get("inbounds", []) if i.get("protocol") == "tun"}
+        logger.warning(f"Xray core {self.version} started")
 
         # execute on start functions
         for func in self._on_start_funcs:
@@ -140,6 +170,11 @@ class XRayCore:
             return
 
         self.process.terminate()
+        try:
+            self.process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            self.process.kill()
+            self.process.wait(timeout=5)
         self.process = None
         logger.warning("Xray core stopped")
 

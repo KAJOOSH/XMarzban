@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from app.utils.system import random_password
 from xray_api.types.account import (
     ShadowsocksAccount,
+    HysteriaAccount,
     ShadowsocksMethods,
     TrojanAccount,
     VLESSAccount,
@@ -29,6 +30,8 @@ class ProxyTypes(str, Enum):
     VLESS = "vless"
     Trojan = "trojan"
     Shadowsocks = "shadowsocks"
+    Hysteria = "hysteria"
+    WireGuard = "wireguard"
 
     @property
     def account_model(self):
@@ -40,6 +43,8 @@ class ProxyTypes(str, Enum):
             return TrojanAccount
         if self == self.Shadowsocks:
             return ShadowsocksAccount
+        if self == self.Hysteria:
+            return HysteriaAccount
 
     @property
     def settings_model(self):
@@ -51,6 +56,10 @@ class ProxyTypes(str, Enum):
             return TrojanSettings
         if self == self.Shadowsocks:
             return ShadowsocksSettings
+        if self == self.Hysteria:
+            return HysteriaSettings
+        if self == self.WireGuard:
+            return WireGuardSettings
 
 
 class ProxySettings(BaseModel, use_enum_values=True):
@@ -85,6 +94,36 @@ class TrojanSettings(ProxySettings):
 
     def revoke(self):
         self.password = random_password()
+
+
+class HysteriaSettings(ProxySettings):
+    auth: str = Field(default_factory=random_password, min_length=1)
+
+    def revoke(self):
+        self.auth = random_password()
+
+
+def generate_wireguard_private_key():
+    from app.xray.wireguard import private_key
+    return private_key()
+
+
+class WireGuardSettings(ProxySettings):
+    private_key: str = Field(default_factory=generate_wireguard_private_key)
+
+    @field_validator("private_key")
+    @classmethod
+    def validate_key(cls, value):
+        from app.xray.wireguard import public_key
+        try:
+            public_key(value)
+        except Exception as exc:
+            raise ValueError("WireGuard private_key must be a base64 encoded 32-byte X25519 key") from exc
+        return value
+
+    def revoke(self):
+        from app.xray.wireguard import private_key
+        self.private_key = private_key()
 
 
 class ShadowsocksSettings(ProxySettings):
@@ -155,7 +194,34 @@ class ProxyHost(BaseModel):
     noise_setting: Optional[str] = Field(None, nullable=True)
     random_user_agent: Union[bool, None] = None
     use_sni_as_host: Union[bool, None] = None
+    xray_stream_settings: Optional[dict] = None
+    xray_protocol_settings: Optional[dict] = None
+    xray_outbound_settings: Optional[dict] = None
     model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("xray_stream_settings")
+    @classmethod
+    def validate_client_stream(cls, value):
+        if value is not None:
+            from app.xray.transport import validate_client_override
+            validate_client_override(value)
+        return value
+
+    @field_validator("xray_protocol_settings")
+    @classmethod
+    def validate_protocol_settings(cls, value):
+        if value and set(value) - {"encryption", "reverse", "seed", "testpre", "testseed", "security", "experiments", "level", "email", "uot", "mtu", "workers", "reserved", "noKernelTun", "domainStrategy"}:
+            raise ValueError("Unsupported or credential-bearing client protocol field")
+        return value
+
+    @field_validator("xray_outbound_settings")
+    @classmethod
+    def validate_outbound_settings(cls, value):
+        if value and set(value) - {"mux", "targetStrategy", "sendThrough"}:
+            raise ValueError("Client outbound settings support mux, targetStrategy and sendThrough")
+        if value and "mux" in value and (not isinstance(value["mux"], dict) or set(value["mux"]) - {"enabled", "concurrency", "xudpConcurrency", "xudpProxyUDP443"}):
+            raise ValueError("Invalid client mux settings")
+        return value
 
     @field_validator("remark", mode="after")
     def validate_remark(cls, v):

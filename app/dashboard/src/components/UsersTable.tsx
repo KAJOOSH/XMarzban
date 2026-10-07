@@ -24,6 +24,7 @@ import {
   Tooltip,
   Tr,
   useBreakpointValue,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import {
@@ -639,7 +640,25 @@ type ActionButtonsProps = {
 const ActionButtons: FC<ActionButtonsProps> = ({ user }) => {
   const { setQRCode, setSubLink } = useDashboard();
 
-  const proxyLinks = user.links.join("\r\n");
+  const toast = useToast();
+  const [copyingConfigs, setCopyingConfigs] = useState(false);
+  const copyConfigs = async () => {
+    setCopyingConfigs(true);
+    try {
+      const url = new URL(user.subscription_url, window.location.origin);
+      url.pathname = url.pathname.replace(/\/$/, "") + "/v2ray-json";
+      const response = await fetch(url.toString());
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const configs = await response.json();
+      if (!Array.isArray(configs)) throw new Error("Invalid configuration response");
+      await navigator.clipboard.writeText(JSON.stringify(configs, null, 2));
+      setCopied([1, true]);
+    } catch (error) {
+      toast({ title: t("usersTable.copyConfigs"), description: String(error), status: "error" });
+    } finally {
+      setCopyingConfigs(false);
+    }
+  };
 
   const [copied, setCopied] = useState([-1, false]);
   useEffect(() => {
@@ -699,12 +718,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({ user }) => {
           </Tooltip>
         </div>
       </CopyToClipboard>
-      <CopyToClipboard
-        text={proxyLinks}
-        onCopy={() => {
-          setCopied([1, true]);
-        }}
-      >
+      <div>
         <div>
           <Tooltip
             label={
@@ -717,6 +731,8 @@ const ActionButtons: FC<ActionButtonsProps> = ({ user }) => {
             <IconButton
               p="0 !important"
               aria-label="copy configs"
+              onClick={copyConfigs}
+              isLoading={copyingConfigs}
               bg="transparent"
               _dark={{
                 _hover: {
@@ -732,7 +748,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({ user }) => {
             </IconButton>
           </Tooltip>
         </div>
-      </CopyToClipboard>
+      </div>
       <Tooltip label="QR Code" placement="top">
         <IconButton
           p="0 !important"

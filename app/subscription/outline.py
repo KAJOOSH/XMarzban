@@ -28,7 +28,7 @@ class OutlineConfiguration:
         return config
 
     def add(self, remark: str, address: str, inbound: dict, settings: dict):
-        if inbound["protocol"] != "shadowsocks":
+        if inbound["protocol"] != "shadowsocks" or inbound["network"] not in {"raw", "tcp"} or inbound["tls"] != "none" or inbound.get("xray_stream_settings") or inbound.get("client_stream", {}).get("finalmask"):
             return
 
         outbound = self.make_outbound(

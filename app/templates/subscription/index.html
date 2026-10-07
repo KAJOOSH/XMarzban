@@ -92,7 +92,23 @@
         {% endif %}</p>
 
     {% if user.status == 'active' %}
-    <h2>Links:</h2>
+    <h2>Full Xray configurations: <span id="config-count">{{ configs | length }}</span></h2>
+    <p>Copy or download the full JSON to keep all transport and client settings.</p>
+    <button id="copy-configs" type="button">Copy configs ({{ configs | length }})</button>
+    <a href="{{ json_url }}">Download Xray JSON</a>
+    <ul id="full-configs">
+        {% for config in configs %}
+        <li class="full-config">
+            <details>
+                <summary>{{ config.remarks }}</summary>
+                <pre>{{ config | tojson(indent=2) }}</pre>
+            </details>
+            <button type="button" class="copy-config" data-index="{{ loop.index0 }}">Copy JSON</button>
+        </li>
+        {% endfor %}
+    </ul>
+    <details>
+    <summary>Legacy URI links ({{ user.links | length }}, limited settings)</summary>
     <ul>
         {% for link in user.links %}
         <li>
@@ -102,6 +118,7 @@
         </li>
         {% endfor %}
     </ul>
+    </details>
     <div class="qr-popup" id="qrPopup">
         <div class="qr-close-button">
             <button onclick="closeQrPopup()">X</button>
@@ -111,6 +128,23 @@
     {% endif %}
 
     <script>
+        const fullConfigs = {{ configs | tojson }};
+        async function copyConfigJson(value, button) {
+            const label = button.textContent;
+            try {
+                await navigator.clipboard.writeText(JSON.stringify(value, null, 2));
+                button.textContent = 'Copied!';
+            } catch (error) {
+                button.textContent = 'Copy failed; download JSON instead';
+            }
+            setTimeout(() => { button.textContent = label; }, 2000);
+        }
+        document.getElementById('copy-configs')?.addEventListener('click', function () {
+            copyConfigJson(fullConfigs, this);
+        });
+        document.querySelectorAll('.copy-config').forEach(button => {
+            button.addEventListener('click', () => copyConfigJson(fullConfigs[Number(button.dataset.index)], button));
+        });
         function copyLink(link, button) {
             const tempInput = document.createElement('input');
             tempInput.setAttribute('value', link);

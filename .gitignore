@@ -160,3 +160,10 @@ xray-core
 *-dev.yml
 *-dev.yaml
 *-debug.*
+
+# Local Docker administrator credentials
+local-admin.json
+
+# Local client connection test artifacts
+output/xray/
+output/server-configs-354/

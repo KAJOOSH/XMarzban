@@ -60,7 +60,6 @@
   "hostsDialog.noise.info": "packet,delay (e.g. rand:10-20,100-200)",
   "hostsDialog.noise.info.attention": "توجه: در حال حاضر، این ویژگی فقط در streisand >= 1.6.32 و v2rayNG >= 1.8.39 (پیکربندی سفارشی) پشتیبانی می شود",
   "hostsDialog.noise.info.examples": "نمونه ها:",
-
   "hostsDialog.host": "هاست درخواست",
   "hostsDialog.host.info": "به‌طور پیش‌فرض، اگر هاست درخواستی در پیکربندی *** تنظیم شده باشد، این هاست استفاده می‌شود. اما می‌توانید یک هاست درخواستی متفاوت در اینجا قرار دهید.",
   "hostsDialog.host.multiHost": "برای تنظیم چند آدرس، با <badge>,</badge> از هم جدا کنید. هر دفعه آدرسی به صورت تصادفی قرار داده می‌شود.",
@@ -194,5 +193,11 @@
   "usersTable.noUser": "کاربری افزوده نشده است",
   "usersTable.noUserMatched": "به‌نظر میرسه کاربری که جستجو کردید، وجود ندارد",
   "usersTable.status": "وضعیت",
-  "usersTable.total": "مجموع"
+  "usersTable.total": "مجموع",
+  "hostsDialog.xray_stream_settings": "تنظیمات پیشرفتهٔ streamSettings کلاینت (JSON)",
+  "hostsDialog.xray_protocol_settings": "تنظیمات پروتکل کلاینت (JSON)",
+  "hostsDialog.clientSettingsHelp": "این تنظیمات بر مقادیر میزبان اولویت دارند. برای تمام جزئیات از اشتراک Xray JSON استفاده کنید؛ کلید خصوصی و گواهی سرور را وارد نکنید.",
+  "userDialog.hysteriaDesc": "Hysteria 2 با احراز هویت اختصاصی هر کاربر",
+  "userDialog.wireguardDesc": "کلید مستقل WireGuard؛ تغییر peerها با راه‌اندازی مجدد هسته اعمال می‌شود.",
+  "hostsDialog.xray_outbound_settings": "تنظیمات پیشرفتهٔ Outbound کلاینت (JSON)"
 }

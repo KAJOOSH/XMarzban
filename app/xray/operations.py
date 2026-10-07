@@ -1,3 +1,6 @@
+from app.xray.transport import supports_vision
+import json
+import threading
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
@@ -56,11 +59,35 @@ def _alter_inbound_user(api: XRayAPI, inbound_tag: str, account: Account):
         pass
 
 
+_wireguard_lock = threading.Lock()
+_wireguard_signature = None
+
+
+def sync_wireguard_users():
+    """WireGuard has no HandlerService account API; apply peer changes by restart."""
+    global _wireguard_signature
+    tags = [i["tag"] for i in xray.config.inbounds_by_protocol.get("wireguard", [])]
+    if not tags:
+        return
+    with _wireguard_lock:
+        startup = xray.config.include_db_users()
+        signature = json.dumps([startup.get_inbound(tag)["settings"] for tag in tags], sort_keys=True)
+        if signature == _wireguard_signature:
+            return
+        xray.core.restart(startup)
+        for node_id, node in list(xray.nodes.items()):
+            if node.connected:
+                restart_node(node_id, startup)
+        _wireguard_signature = signature
+
+
 def add_user(dbuser: "DBUser"):
     user = UserResponse.model_validate(dbuser)
     email = f"{dbuser.id}.{dbuser.username}"
 
     for proxy_type, inbound_tags in user.inbounds.items():
+        if proxy_type == "wireguard":
+            continue
         for inbound_tag in inbound_tags:
             inbound = xray.config.inbounds_by_tag.get(inbound_tag, {})
 
@@ -70,18 +97,7 @@ def add_user(dbuser: "DBUser"):
                 pass
             account = proxy_type.account_model(email=email, **proxy_settings)
 
-            # XTLS currently only supports transmission methods of TCP and mKCP
-            if getattr(account, 'flow', None) and (
-                inbound.get('network', 'tcp') not in ('tcp', 'kcp')
-                or
-                (
-                    inbound.get('network', 'tcp') in ('tcp', 'kcp')
-                    and
-                    inbound.get('tls') not in ('tls', 'reality')
-                )
-                or
-                inbound.get('header_type') == 'http'
-            ):
+            if getattr(account, "flow", None) and not supports_vision(inbound):
                 account.flow = XTLSFlows.NONE
 
             _add_user_to_inbound(xray.api, inbound_tag, account)  # main core
@@ -90,14 +106,22 @@ def add_user(dbuser: "DBUser"):
                     _add_user_to_inbound(node.api, inbound_tag, account)
 
 
+    sync_wireguard_users()
+
+
 def remove_user(dbuser: "DBUser"):
     email = f"{dbuser.id}.{dbuser.username}"
 
     for inbound_tag in xray.config.inbounds_by_tag:
+        if xray.config.inbounds_by_tag[inbound_tag]["protocol"] == "wireguard":
+            continue
         _remove_user_from_inbound(xray.api, inbound_tag, email)
         for node in list(xray.nodes.values()):
             if node.connected and node.started:
                 _remove_user_from_inbound(node.api, inbound_tag, email)
+
+
+    sync_wireguard_users()
 
 
 def update_user(dbuser: "DBUser"):
@@ -106,6 +130,8 @@ def update_user(dbuser: "DBUser"):
 
     active_inbounds = []
     for proxy_type, inbound_tags in user.inbounds.items():
+        if proxy_type == "wireguard":
+            continue
         for inbound_tag in inbound_tags:
             active_inbounds.append(inbound_tag)
             inbound = xray.config.inbounds_by_tag.get(inbound_tag, {})
@@ -116,18 +142,7 @@ def update_user(dbuser: "DBUser"):
                 pass
             account = proxy_type.account_model(email=email, **proxy_settings)
 
-            # XTLS currently only supports transmission methods of TCP and mKCP
-            if getattr(account, 'flow', None) and (
-                inbound.get('network', 'tcp') not in ('tcp', 'kcp')
-                or
-                (
-                    inbound.get('network', 'tcp') in ('tcp', 'kcp')
-                    and
-                    inbound.get('tls') not in ('tls', 'reality')
-                )
-                or
-                inbound.get('header_type') == 'http'
-            ):
+            if getattr(account, "flow", None) and not supports_vision(inbound):
                 account.flow = XTLSFlows.NONE
 
             _alter_inbound_user(xray.api, inbound_tag, account)  # main core
@@ -136,6 +151,8 @@ def update_user(dbuser: "DBUser"):
                     _alter_inbound_user(node.api, inbound_tag, account)
 
     for inbound_tag in xray.config.inbounds_by_tag:
+        if xray.config.inbounds_by_tag[inbound_tag]["protocol"] == "wireguard":
+            continue
         if inbound_tag in active_inbounds:
             continue
         # remove disabled inbounds
@@ -143,6 +160,9 @@ def update_user(dbuser: "DBUser"):
         for node in list(xray.nodes.values()):
             if node.connected and node.started:
                 _remove_user_from_inbound(node.api, inbound_tag, email)
+
+
+    sync_wireguard_users()
 
 
 def remove_node(node_id: int):

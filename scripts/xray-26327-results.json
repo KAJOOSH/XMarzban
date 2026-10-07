@@ -1,0 +1,759 @@
+[
+  {
+    "tag": "HYSTERIA API add",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "HYSTERIA API removed",
+    "status": "passed",
+    "expected": "authentication rejected"
+  },
+  {
+    "tag": "VMESS RAW",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS RAW TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS RAW REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS WS TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS HTTPUpgrade TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS gRPC TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS Hysteria TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS XHTTP packet-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS XHTTP stream-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS XHTTP stream-one TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS XHTTP H3 TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS XHTTP REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS gRPC REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS RAW",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS RAW TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS RAW REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS WS TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS HTTPUpgrade TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS gRPC TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS Hysteria TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS XHTTP packet-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS XHTTP stream-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS XHTTP stream-one TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS XHTTP H3 TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS XHTTP REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS gRPC REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN RAW",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN RAW TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN RAW REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN WS TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN HTTPUpgrade TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN gRPC TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN Hysteria TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN XHTTP packet-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN XHTTP stream-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN XHTTP stream-one TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN XHTTP H3 TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN XHTTP REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN gRPC REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "SHADOWSOCKS RAW",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "SHADOWSOCKS RAW TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "SHADOWSOCKS RAW REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "SHADOWSOCKS WS TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS HTTPUpgrade TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS gRPC TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS Hysteria TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS XHTTP packet-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS XHTTP stream-up TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS XHTTP stream-one TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS XHTTP H3 TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS XHTTP REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS gRPC REALITY",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "HYSTERIA 2",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP header-srtp",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP header-utp",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP header-wechat",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP header-dtls",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP header-wireguard",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP header-dns",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP mkcp-original",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP header-custom",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP salamander",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS mKCP noise",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS RAW HTTP HEADER",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS XHTTP header TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS XHTTP cookie TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS RAW TLS ECH",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VMESS RAW REALITY MLDSA65",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP header-srtp",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP header-utp",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP header-wechat",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP header-dtls",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP header-wireguard",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP header-dns",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP mkcp-original",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP header-custom",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP salamander",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS mKCP noise",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS RAW HTTP HEADER",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS XHTTP header TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS XHTTP cookie TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS RAW TLS ECH",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "VLESS RAW REALITY MLDSA65",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP header-srtp",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP header-utp",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP header-wechat",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP header-dtls",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP header-wireguard",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP header-dns",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP mkcp-original",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP header-custom",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP salamander",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN mKCP noise",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN RAW HTTP HEADER",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN XHTTP header TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN XHTTP cookie TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN RAW TLS ECH",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "TROJAN RAW REALITY MLDSA65",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP header-srtp",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP header-utp",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP header-wechat",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP header-dtls",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP header-wireguard",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP header-dns",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP mkcp-original",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP header-custom",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP salamander",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS mKCP noise",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS RAW HTTP HEADER",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "SHADOWSOCKS XHTTP header TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS XHTTP cookie TLS",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "SHADOWSOCKS RAW TLS ECH",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "SHADOWSOCKS RAW REALITY MLDSA65",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "LOCAL SOCKS",
+    "status": "passed",
+    "tcp": true
+  },
+  {
+    "tag": "LOCAL MIXED",
+    "status": "passed",
+    "tcp": true
+  },
+  {
+    "tag": "LOCAL TUNNEL",
+    "status": "passed",
+    "tcp": true
+  },
+  {
+    "tag": "LOCAL DOKODEMO",
+    "status": "passed",
+    "tcp": true
+  },
+  {
+    "tag": "LOCAL HTTP none",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "LOCAL HTTP tls",
+    "status": "passed",
+    "tcp": true,
+    "udp": false
+  },
+  {
+    "tag": "LOCAL WIREGUARD",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  },
+  {
+    "tag": "LOCAL TUN",
+    "status": "passed",
+    "tcp": true,
+    "udp": true
+  }
+]

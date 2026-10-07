@@ -12,6 +12,7 @@ from jinja2.exceptions import TemplateNotFound
 from app.subscription.funcs import get_grpc_gun, get_grpc_multi
 from app.templates import render_template
 from app.utils.helpers import UUIDEncoder
+from app.xray.transport import subscription_stream, select_port, supports_vision, CLIENT_PROTOCOL_FIELDS
 from config import (
     EXTERNAL_CONFIG,
     GRPC_USER_AGENT_TEMPLATE,
@@ -20,6 +21,45 @@ from config import (
     V2RAY_SETTINGS_TEMPLATE,
     V2RAY_SUBSCRIPTION_TEMPLATE,
 )
+
+
+def endpoint(address, port):
+    return f"[{address}]:{port}" if ":" in address else f"{address}:{port}"
+
+
+def share_parameters(stream, inbound):
+    network = stream["network"]
+    params = {"type": network, "security": stream.get("security", "none")}
+    tls = stream.get("tlsSettings", stream.get("realitySettings", {}))
+    for field, key in (("echConfigList", "ech"), ("pinnedPeerCertSha256", "pcs"),
+                       ("verifyPeerCertByName", "vcn"), ("mldsa65Verify", "pqv"),
+                       ("serverName", "sni"), ("fingerprint", "fp")):
+        if tls.get(field):
+            params[key] = tls[field]
+    if stream.get("finalmask"):
+        params["fm"] = json.dumps(stream["finalmask"], separators=(",", ":"))
+    options = stream.get(f"{network}Settings", {})
+    for field, key in (("host", "host"), ("path", "path"), ("serviceName", "serviceName"), ("authority", "authority")):
+        if field in options:
+            params[key] = options[field]
+    if tls.get("alpn"):
+        params["alpn"] = ",".join(tls["alpn"])
+    for field, key in (("publicKey", "pbk"), ("shortId", "sid"), ("spiderX", "spx")):
+        if tls.get(field):
+            params[key] = tls[field]
+    if network == "xhttp":
+        params["mode"] = options.get("mode", "auto")
+        params["extra"] = json.dumps({k: v for k, v in options.items() if k not in {"host", "path", "mode"}}, separators=(",", ":"))
+    if network == "kcp":
+        for field in ("mtu", "tti"):
+            if field in options:
+                params[field] = str(options[field])
+    if inbound["protocol"] == "hysteria":
+        params.pop("type", None)
+        params.pop("security", None)
+        if inbound.get("ais"):
+            params["insecure"] = "1"
+    return params
 
 
 class V2rayShareLink(str):
@@ -37,7 +77,16 @@ class V2rayShareLink(str):
         return self.links
 
     def add(self, remark: str, address: str, inbound: dict, settings: dict):
+        if inbound["protocol"] == "wireguard":
+            options = inbound["wireguard"]
+            params = {"publickey": options["publicKey"], "address": ",".join(settings["address"]),
+                      "mtu": options["mtu"], "reserved": ",".join(map(str, options["reserved"]))}
+            link = "wireguard://" + quote(settings["private_key"], safe="") + "@" + endpoint(address, inbound["port"]) + "?" + urlparse.urlencode(params) + "#" + quote(remark)
+            self.add_link(link)
+            return
         net = inbound["network"]
+        if net == "hysteria" and inbound["protocol"] != "hysteria":
+            return  # Transport auth/congestion require the complete Xray JSON.
         multi_mode = inbound.get("multiMode", False)
         old_path: str = inbound["path"]
 
@@ -52,6 +101,13 @@ class V2rayShareLink(str):
         else:
             path = old_path
 
+        if inbound["protocol"] == "hysteria":
+            stream = subscription_stream(inbound, {})
+            stream.setdefault("hysteriaSettings", {}).update(version=2, auth=settings["auth"])
+            params = share_parameters(stream, inbound)
+            link = "hysteria2://" + quote(settings["auth"], safe="") + "@" + endpoint(address, inbound["port"]) + "?" + urlparse.urlencode(params) + "#" + quote(remark)
+            self.add_link(link)
+            return
         if inbound["protocol"] == "vmess":
             link = self.vmess(
                 remark=remark,
@@ -148,6 +204,9 @@ class V2rayShareLink(str):
             )
 
         elif inbound["protocol"] == "shadowsocks":
+            stream = subscription_stream(inbound, {})
+            if stream["network"] != "raw" or stream.get("security", "none") != "none" or stream.get("finalmask") or stream.get("rawSettings", {}).get("header", {}).get("type", "none") != "none":
+                return  # SIP002 cannot represent Xray transports; use Xray JSON.
             link = self.shadowsocks(
                 remark=remark,
                 address=address,
@@ -158,6 +217,28 @@ class V2rayShareLink(str):
         else:
             return
 
+        if (inbound.get("xray_protocol_settings") or {}).get("reverse"):
+            return  # Reverse settings require the complete JSON configuration.
+        if inbound["protocol"] in {"vless", "trojan"}:
+            parts = urlparse.urlsplit(link)
+            params = dict(urlparse.parse_qsl(parts.query))
+            params.update(share_parameters(subscription_stream(inbound, {}), inbound))
+            if not supports_vision(inbound):
+                params.pop("flow", None)
+            if inbound["protocol"] == "vless":
+                params["encryption"] = (inbound.get("xray_protocol_settings") or {}).get("encryption", "none")
+            link = urlparse.urlunsplit(parts._replace(query=urlparse.urlencode(params)))
+        elif inbound["protocol"] == "vmess":
+            payload = json.loads(base64.b64decode(link.removeprefix("vmess://")))
+            payload.update(share_parameters(subscription_stream(inbound, {}), inbound))
+            # Legacy VMess JSON uses net/type rather than URI type/headerType.
+            payload["net"] = inbound["network"]
+            payload["type"] = inbound.get("mode", "auto") if inbound["network"] == "xhttp" else inbound["header_type"]
+            if inbound["tls"] == "reality" or inbound["network"] in {"kcp", "xhttp"}:
+                params = share_parameters(subscription_stream(inbound, {}), inbound)
+                link = "vmess://" + quote(str(settings["id"]), safe="") + "@" + endpoint(address, inbound["port"]) + "?" + urlparse.urlencode(params) + "#" + quote(remark)
+            else:
+                link = "vmess://" + base64.b64encode(json.dumps(payload, cls=UUIDEncoder).encode()).decode()
         self.add_link(link=link)
 
     @classmethod
@@ -983,14 +1064,39 @@ class V2rayJsonConfig(str):
                                           tls_settings=tls_settings,
                                           sockopt=sockopt)
 
+    @staticmethod
+    def apply_protocol_options(outbound, inbound):
+        options = copy.deepcopy(inbound.get("xray_protocol_settings") or {})
+        protocol = outbound["protocol"]
+        if set(options) - CLIENT_PROTOCOL_FIELDS[protocol]:
+            raise ValueError(f"Client protocol options are incompatible with {protocol}")
+        settings = outbound["settings"]
+        if "vnext" in settings:
+            settings["vnext"][0]["users"][0].update(options)
+        elif "servers" in settings:
+            settings["servers"][0].update(options)
+        else:
+            settings.update(options)
+
     def add(self, remark: str, address: str, inbound: dict, settings: dict):
 
+        if inbound["protocol"] == "wireguard":
+            options = inbound["wireguard"]
+            outbound = {"tag": "proxy", "protocol": "wireguard", "settings": {
+                "secretKey": settings["private_key"], "address": settings["address"],
+                "mtu": options["mtu"], "reserved": options["reserved"], "noKernelTun": True,
+                "domainStrategy": "ForceIPv4v6",
+                "peers": [{"publicKey": options["publicKey"], "endpoint": endpoint(address, select_port(inbound["port"])),
+                           "allowedIPs": ["0.0.0.0/0", "::/0"], "keepAlive": 25}]}}
+            self.apply_protocol_options(outbound, inbound)
+            outbound.update(copy.deepcopy(inbound.get("xray_outbound_settings") or {}))
+            self.add_config(remarks=remark, outbounds=[outbound])
+            # WireGuard needs DNS before its tunnel exists; querying through itself deadlocks.
+            self.config[-1]["dns"] = {"servers": ["localhost"], "hosts": {"localhost": "127.0.0.1"}}
+            return
         net = inbound['network']
         protocol = inbound['protocol']
-        port = inbound['port']
-        if isinstance(port, str):
-            ports = port.split(',')
-            port = int(choice(ports))
+        port = select_port(inbound['port'])
 
         tls = (inbound['tls'])
         headers = inbound['header_type']
@@ -1016,7 +1122,7 @@ class V2rayJsonConfig(str):
                                                      id=settings['id'])
 
         elif inbound['protocol'] == 'vless':
-            if net in ('tcp', 'raw', 'kcp') and headers != 'http' and tls in ('tls', 'reality'):
+            if supports_vision(inbound):
                 flow = settings.get('flow', '')
             else:
                 flow = None
@@ -1036,6 +1142,9 @@ class V2rayJsonConfig(str):
                                                            port=port,
                                                            password=settings['password'],
                                                            method=settings['method'])
+
+        elif protocol == 'hysteria':
+            outbound["settings"] = {"version": 2, "address": address, "port": port}
 
         outbounds = [outbound]
         dialer_proxy = ''
@@ -1071,6 +1180,16 @@ class V2rayJsonConfig(str):
             heartbeatPeriod=inbound.get("heartbeatPeriod", 0),
             keepAlivePeriod=inbound.get("keepAlivePeriod", 0),
         )
+        outbound["streamSettings"] = subscription_stream(inbound, outbound["streamSettings"])
+        if protocol == "hysteria":
+            outbound["streamSettings"].setdefault("hysteriaSettings", {}).update(version=2, auth=settings["auth"])
+        protocol_settings = inbound.get("xray_protocol_settings") or {}
+        if protocol == "vless":
+            outbound["settings"]["vnext"][0]["users"][0]["encryption"] = protocol_settings.get("encryption", "none")
+            if "reverse" in protocol_settings:
+                outbound["settings"] = {"address": address, "port": port, "id": settings["id"],
+                                        "encryption": protocol_settings.get("encryption", "none"),
+                                        "flow": flow or "", "reverse": copy.deepcopy(protocol_settings["reverse"])}
 
         mux_json = json.loads(self.mux_template)
         mux_config = mux_json["v2ray"]
@@ -1079,4 +1198,8 @@ class V2rayJsonConfig(str):
             outbound["mux"] = mux_config
             outbound["mux"]["enabled"] = True
 
+        self.apply_protocol_options(outbound, inbound)
+        outbound.update(copy.deepcopy(inbound.get("xray_outbound_settings") or {}))
         self.add_config(remarks=remark, outbounds=outbounds)
+        if address == "localhost":
+            self.config[-1].setdefault("dns", {}).setdefault("hosts", {})["localhost"] = "127.0.0.1"

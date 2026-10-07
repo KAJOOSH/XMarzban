@@ -14,6 +14,7 @@ from app.db import models as db_models
 from app.models.proxy import ProxyTypes
 from app.models.user import UserStatus
 from app.utils.crypto import get_cert_SANs
+from app.xray.transport import canonical_network, client_stream, transport_settings, supports_vision
 from config import DEBUG, XRAY_EXCLUDE_INBOUND_TAGS, XRAY_FALLBACKS_INBOUND_TAG
 
 
@@ -65,7 +66,7 @@ class XRayConfig(dict):
         api_inbound = self.get_inbound("API_INBOUND")
         if api_inbound:
             api_inbound["listen"] = self.api_host
-            api_inbound["listen"]["address"] = self.api_host
+            api_inbound.setdefault("settings", {})["address"] = self.api_host
             api_inbound["port"] = self.api_port
             return
 
@@ -136,6 +137,15 @@ class XRayConfig(dict):
                 raise ValueError("all inbounds must have a unique tag")
             if ',' in inbound.get("tag"):
                 raise ValueError("character «,» is not allowed in inbound tag")
+            if inbound.get("streamSettings"):
+                client_stream(inbound["streamSettings"])
+            if inbound.get("protocol") == "hysteria":
+                stream = inbound.get("streamSettings", {})
+                if stream.get("network") != "hysteria" or stream.get("security") != "tls":
+                    raise ValueError("Hysteria 2 inbounds require network hysteria and TLS")
+        tags = [item["tag"] for item in self["inbounds"]]
+        if len(tags) != len(set(tags)):
+            raise ValueError("all inbounds must have a unique tag")
         for outbound in self['outbounds']:
             if not outbound.get("tag"):
                 raise ValueError("all outbounds must have a unique tag")
@@ -150,7 +160,7 @@ class XRayConfig(dict):
 
             if not inbound.get('settings'):
                 inbound['settings'] = {}
-            if not inbound['settings'].get('clients'):
+            if inbound['protocol'] != 'wireguard' and not inbound['settings'].get('clients'):
                 inbound['settings']['clients'] = []
 
             settings = {
@@ -166,6 +176,12 @@ class XRayConfig(dict):
                 "is_fallback": False
             }
 
+            if inbound["protocol"] == "wireguard":
+                from app.xray.wireguard import public_key
+                source = inbound["settings"]
+                settings.update(network="raw", wireguard={"publicKey": public_key(source["secretKey"]),
+                                "mtu": source.get("mtu", 1420), "reserved": source.get("reserved", [0, 0, 0])})
+
             # port settings
             try:
                 settings['port'] = inbound['port']
@@ -179,10 +195,10 @@ class XRayConfig(dict):
 
             # stream settings
             if stream := inbound.get('streamSettings'):
-                net = stream.get('network', 'tcp')
-                net_settings = stream.get(f"{net}Settings", {})
+                net = canonical_network(stream.get('network', 'raw'))
+                net_settings = transport_settings(stream)
                 security = stream.get("security")
-                tls_settings = stream.get(f"{security}Settings")
+                tls_settings = stream.get(f"{security}Settings") or {}
 
                 if settings['is_fallback'] is True:
                     # probably this is a fallback
@@ -192,8 +208,11 @@ class XRayConfig(dict):
                         'streamSettings', {}).get(f"{security}Settings", {})
 
                 settings['network'] = net
+                settings['client_stream'] = client_stream(stream)
 
                 if security == 'tls':
+                    settings['alpn'] = ','.join(tls_settings.get('alpn') or [])
+                    settings['fp'] = tls_settings.get('fingerprint', '')
                     # settings['fp']
                     # settings['alpn']
                     settings['tls'] = 'tls'
@@ -243,7 +262,7 @@ class XRayConfig(dict):
                         raise ValueError(
                             f"You need to define at least one shortID in realitySettings of {inbound['tag']}")
                     try:
-                        settings['spx'] = tls_settings.get('SpiderX')
+                        settings['spx'] = tls_settings.get('spiderX', '')
                     except:
                         settings['spx'] = ""
 
@@ -316,7 +335,7 @@ class XRayConfig(dict):
                     header = net_settings.get('header', {})
 
                     settings['header_type'] = header.get('type', '')
-                    settings['host'] = header.get('domain', '')
+                    settings['host'] = [header['domain']] if header.get('domain') else []
                     settings['path'] = net_settings.get('seed', '')
 
                 elif net in ("http", "h2", "h3"):
@@ -400,7 +419,8 @@ class XRayConfig(dict):
                     continue
 
                 for inbound in inbounds:
-                    clients = config.get_inbound(inbound['tag'])['settings']['clients']
+                    target_settings = config.get_inbound(inbound['tag'])['settings']
+                    clients = target_settings.setdefault('peers' if proxy_type == 'wireguard' else 'clients', [])
 
                     for row in rows:
                         user_id, username, settings, excluded_inbound_tags = row
@@ -408,24 +428,21 @@ class XRayConfig(dict):
                         if excluded_inbound_tags and inbound['tag'] in excluded_inbound_tags:
                             continue
 
+                        if proxy_type == "wireguard":
+                            from app.xray.wireguard import addresses, public_key
+                            clients.append({"publicKey": public_key(settings["private_key"]), "allowedIPs": addresses(user_id)})
+                            for address in ("10.78.0.1/32", "fd00:78::1/128"):
+                                if address not in target_settings.setdefault("address", []):
+                                    target_settings["address"].append(address)
+                            continue
+
                         client = {
                             "email": f"{user_id}.{username}",
                             **settings
                         }
 
-                        # XTLS currently only supports transmission methods of TCP and mKCP
-                        if client.get('flow') and (
-                                inbound.get('network', 'tcp') not in ('tcp', 'raw', 'kcp')
-                                or
-                                (
-                                    inbound.get('network', 'tcp') in ('tcp', 'raw', 'kcp')
-                                    and
-                                    inbound.get('tls') not in ('tls', 'reality')
-                                )
-                                or
-                                inbound.get('header_type') == 'http'
-                        ):
-                            del client['flow']
+                        if client.get("flow") and not supports_vision(inbound):
+                            del client["flow"]
 
                         clients.append(client)
 

@@ -1,3 +1,4 @@
+import json
 import re
 from distutils.version import LooseVersion
 
@@ -61,7 +62,13 @@ def user_subscription(
         return HTMLResponse(
             render_template(
                 SUBSCRIPTION_PAGE_TEMPLATE,
-                {"user": user}
+                {
+                    "user": user,
+                    "configs": json.loads(generate_subscription(
+                        user=user, config_format="v2ray-json", as_base64=False, reverse=False
+                    )),
+                    "json_url": str(request.url).split("?")[0].rstrip("/") + "/v2ray-json",
+                }
             )
         )
 
@@ -94,9 +101,9 @@ def user_subscription(
         conf = generate_subscription(user=user, config_format="outline", as_base64=False, reverse=False)
         return Response(content=conf, media_type="application/json", headers=response_headers)
 
-    elif (USE_CUSTOM_JSON_DEFAULT or USE_CUSTOM_JSON_FOR_V2RAYN) and re.match(r'^v2rayN/(\d+\.\d+)', user_agent):
-        version_str = re.match(r'^v2rayN/(\d+\.\d+)', user_agent).group(1)
-        if LooseVersion(version_str) >= LooseVersion("6.40"):
+    elif (USE_CUSTOM_JSON_DEFAULT or USE_CUSTOM_JSON_FOR_V2RAYN) and re.match(r'^v2rayN(?:/|$|\s)', user_agent, re.I):
+        version = re.match(r'^v2rayN/(\d+\.\d+)', user_agent, re.I)
+        if version is None or LooseVersion(version.group(1)) >= LooseVersion("6.40"):
             conf = generate_subscription(user=user, config_format="v2ray-json", as_base64=False, reverse=False)
             return Response(content=conf, media_type="application/json", headers=response_headers)
         else:
@@ -135,6 +142,9 @@ def user_subscription(
 
 
     else:
+        if USE_CUSTOM_JSON_DEFAULT:
+            conf = generate_subscription(user=user, config_format="v2ray-json", as_base64=False, reverse=False)
+            return Response(content=conf, media_type="application/json", headers=response_headers)
         conf = generate_subscription(user=user, config_format="v2ray", as_base64=True, reverse=False)
         return Response(content=conf, media_type="text/plain", headers=response_headers)
 

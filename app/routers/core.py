@@ -17,6 +17,12 @@ from config import XRAY_JSON
 router = APIRouter(tags=["Core"], prefix="/api", responses={401: responses._401})
 
 
+@router.get("/core/capabilities")
+def get_core_capabilities(admin: Admin = Depends(Admin.get_current)):
+    from app.xray.capabilities import capabilities
+    return capabilities()
+
+
 @router.websocket("/core/logs")
 async def core_logs(websocket: WebSocket, db: Session = Depends(get_db)):
     token = websocket.query_params.get("token") or websocket.headers.get(
@@ -114,6 +120,8 @@ def modify_core_config(
     """Modify the core configuration and restart the core."""
     try:
         config = XRayConfig(payload, api_port=xray.config.api_port)
+        startup_config = config.include_db_users()
+        xray.core.validate(startup_config)
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
 
@@ -121,7 +129,6 @@ def modify_core_config(
     with open(XRAY_JSON, "w") as f:
         f.write(json.dumps(payload, indent=4))
 
-    startup_config = xray.config.include_db_users()
     xray.core.restart(startup_config)
     for node_id, node in list(xray.nodes.items()):
         if node.connected:

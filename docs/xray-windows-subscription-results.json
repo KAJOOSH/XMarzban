@@ -1,0 +1,563 @@
+{
+  "core_version": "26.3.27",
+  "client": "Installed Windows Xray binary bundled with v2rayN",
+  "server": "Local Marzban Docker",
+  "validated": 58,
+  "connected": 58,
+  "entries": [
+    {
+      "index": 1,
+      "protocol": "vmess",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.602
+    },
+    {
+      "index": 2,
+      "protocol": "vmess",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.615
+    },
+    {
+      "index": 3,
+      "protocol": "vmess",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.6
+    },
+    {
+      "index": 4,
+      "protocol": "vmess",
+      "network": "ws",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.586
+    },
+    {
+      "index": 5,
+      "protocol": "vmess",
+      "network": "httpupgrade",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.6
+    },
+    {
+      "index": 6,
+      "protocol": "vmess",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.584
+    },
+    {
+      "index": 7,
+      "protocol": "vmess",
+      "network": "kcp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.735
+    },
+    {
+      "index": 8,
+      "protocol": "vmess",
+      "network": "hysteria",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.613
+    },
+    {
+      "index": 9,
+      "protocol": "vmess",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.622
+    },
+    {
+      "index": 10,
+      "protocol": "vmess",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.589
+    },
+    {
+      "index": 11,
+      "protocol": "vmess",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.613
+    },
+    {
+      "index": 12,
+      "protocol": "vmess",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.619
+    },
+    {
+      "index": 13,
+      "protocol": "vmess",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.589
+    },
+    {
+      "index": 14,
+      "protocol": "vmess",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.579
+    },
+    {
+      "index": 15,
+      "protocol": "vless",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.579
+    },
+    {
+      "index": 16,
+      "protocol": "vless",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.602
+    },
+    {
+      "index": 17,
+      "protocol": "vless",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.603
+    },
+    {
+      "index": 18,
+      "protocol": "vless",
+      "network": "ws",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.593
+    },
+    {
+      "index": 19,
+      "protocol": "vless",
+      "network": "httpupgrade",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.61
+    },
+    {
+      "index": 20,
+      "protocol": "vless",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.6
+    },
+    {
+      "index": 21,
+      "protocol": "vless",
+      "network": "kcp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.697
+    },
+    {
+      "index": 22,
+      "protocol": "vless",
+      "network": "hysteria",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.605
+    },
+    {
+      "index": 23,
+      "protocol": "vless",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.648
+    },
+    {
+      "index": 24,
+      "protocol": "vless",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.613
+    },
+    {
+      "index": 25,
+      "protocol": "vless",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.621
+    },
+    {
+      "index": 26,
+      "protocol": "vless",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.608
+    },
+    {
+      "index": 27,
+      "protocol": "vless",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.573
+    },
+    {
+      "index": 28,
+      "protocol": "vless",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.615
+    },
+    {
+      "index": 29,
+      "protocol": "trojan",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.592
+    },
+    {
+      "index": 30,
+      "protocol": "trojan",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.582
+    },
+    {
+      "index": 31,
+      "protocol": "trojan",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.609
+    },
+    {
+      "index": 32,
+      "protocol": "trojan",
+      "network": "ws",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.606
+    },
+    {
+      "index": 33,
+      "protocol": "trojan",
+      "network": "httpupgrade",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.564
+    },
+    {
+      "index": 34,
+      "protocol": "trojan",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.613
+    },
+    {
+      "index": 35,
+      "protocol": "trojan",
+      "network": "kcp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.689
+    },
+    {
+      "index": 36,
+      "protocol": "trojan",
+      "network": "hysteria",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.6
+    },
+    {
+      "index": 37,
+      "protocol": "trojan",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.645
+    },
+    {
+      "index": 38,
+      "protocol": "trojan",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.593
+    },
+    {
+      "index": 39,
+      "protocol": "trojan",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.598
+    },
+    {
+      "index": 40,
+      "protocol": "trojan",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.609
+    },
+    {
+      "index": 41,
+      "protocol": "trojan",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.588
+    },
+    {
+      "index": 42,
+      "protocol": "trojan",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.599
+    },
+    {
+      "index": 43,
+      "protocol": "shadowsocks",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.567
+    },
+    {
+      "index": 44,
+      "protocol": "shadowsocks",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.602
+    },
+    {
+      "index": 45,
+      "protocol": "shadowsocks",
+      "network": "raw",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.592
+    },
+    {
+      "index": 46,
+      "protocol": "shadowsocks",
+      "network": "ws",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.592
+    },
+    {
+      "index": 47,
+      "protocol": "shadowsocks",
+      "network": "httpupgrade",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.593
+    },
+    {
+      "index": 48,
+      "protocol": "shadowsocks",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.595
+    },
+    {
+      "index": 49,
+      "protocol": "shadowsocks",
+      "network": "kcp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.647
+    },
+    {
+      "index": 50,
+      "protocol": "shadowsocks",
+      "network": "hysteria",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.602
+    },
+    {
+      "index": 51,
+      "protocol": "shadowsocks",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.633
+    },
+    {
+      "index": 52,
+      "protocol": "shadowsocks",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.601
+    },
+    {
+      "index": 53,
+      "protocol": "shadowsocks",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.6
+    },
+    {
+      "index": 54,
+      "protocol": "shadowsocks",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.575
+    },
+    {
+      "index": 55,
+      "protocol": "shadowsocks",
+      "network": "xhttp",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.593
+    },
+    {
+      "index": 56,
+      "protocol": "shadowsocks",
+      "network": "grpc",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.601
+    },
+    {
+      "index": 57,
+      "protocol": "hysteria",
+      "network": "hysteria",
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.59
+    },
+    {
+      "index": 58,
+      "protocol": "wireguard",
+      "network": null,
+      "validation": true,
+      "connection": true,
+      "response": "HTTP/1.1 204 No Content",
+      "seconds": 0.553
+    }
+  ],
+  "wireguard_lifecycle": [
+    {
+      "stage": "created",
+      "passed": true,
+      "expected_rejection": false
+    },
+    {
+      "stage": "disabled",
+      "passed": true,
+      "expected_rejection": true
+    },
+    {
+      "stage": "reactivated",
+      "passed": true,
+      "expected_rejection": false
+    },
+    {
+      "stage": "revoked-old-key",
+      "passed": true,
+      "expected_rejection": true
+    },
+    {
+      "stage": "new-key",
+      "passed": true,
+      "expected_rejection": false
+    },
+    {
+      "stage": "deleted",
+      "passed": true,
+      "expected_rejection": true
+    }
+  ]
+}

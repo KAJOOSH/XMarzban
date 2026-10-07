@@ -17,6 +17,9 @@ from config import (
 )
 
 
+from app.xray.transport import portable_hysteria, portable_legacy_stream, supports_vision
+
+
 class ClashConfiguration(object):
     def __init__(self):
         self.data = {
@@ -173,6 +176,8 @@ class ClashConfiguration(object):
 
         if type == 'shadowsocks':
             type = 'ss'
+        if network == "raw":
+            network = "tcp"
         if network in ("http", "h2", "h3"):
             network = "h2"
         if network in ('tcp', 'raw') and headers == 'http':
@@ -254,8 +259,12 @@ class ClashConfiguration(object):
         return node
 
     def add(self, remark: str, address: str, inbound: dict, settings: dict):
+        if inbound["protocol"] == "wireguard":
+            return  # Use Xray JSON or the native WireGuard URI.
         # not supported by clash
-        if inbound['network'] in ("kcp", "splithttp", "xhttp"):
+        if inbound["protocol"] == "shadowsocks" and (inbound["network"] not in {"raw", "tcp"} or inbound["tls"] != "none"):
+            return
+        if inbound['network'] not in {"raw", "tcp", "ws", "grpc"} or inbound["tls"] == "reality" or inbound.get("xray_stream_settings") or inbound.get("xray_protocol_settings") or inbound.get("client_stream", {}).get("finalmask") or not portable_legacy_stream(inbound):
             return
 
         proxy_remark = self._remark_validation(remark)
@@ -345,8 +354,28 @@ class ClashMetaConfiguration(ClashConfiguration):
         return node
 
     def add(self, remark: str, address: str, inbound: dict, settings: dict):
+        if inbound["protocol"] == "wireguard":
+            return  # Use Xray JSON or the native WireGuard URI.
         # not supported by clash-meta
-        if inbound['network'] in ("kcp", "splithttp", "xhttp") or (inbound['network'] == "quic" and inbound["header_type"] != "none"):
+        if inbound["protocol"] == "shadowsocks" and (inbound["network"] not in {"raw", "tcp"} or inbound["tls"] != "none"):
+            return
+        if inbound["protocol"] == "hysteria":
+            portable = portable_hysteria(inbound)
+            if portable is None:
+                return
+            stream, obfs = portable
+            name = self._remark_validation(remark)
+            node = {"name": name, "type": "hysteria2", "server": address,
+                    "port": inbound["port"], "password": settings["auth"],
+                    "sni": inbound["sni"], "skip-cert-verify": bool(inbound.get("ais")), "udp": True}
+            if inbound.get("alpn"):
+                node["alpn"] = inbound["alpn"].split(",")
+            if obfs:
+                node.update(obfs="salamander", **{"obfs-password": obfs})
+            self.data["proxies"].append(node)
+            self.proxy_remarks.append(name)
+            return
+        if inbound['network'] not in {"raw", "tcp", "ws", "grpc"} or inbound.get("xray_stream_settings") or inbound.get("xray_protocol_settings") or inbound.get("client_stream", {}).get("finalmask") or not portable_legacy_stream(inbound):
             return
 
         proxy_remark = self._remark_validation(remark)
@@ -381,7 +410,7 @@ class ClashMetaConfiguration(ClashConfiguration):
         elif inbound['protocol'] == 'vless':
             node['uuid'] = settings['id']
 
-            if inbound['network'] in ('tcp', 'raw', 'kcp') and inbound['header_type'] != 'http' and inbound['tls'] != 'none':
+            if supports_vision(inbound):
                 node['flow'] = settings.get('flow', '')
 
         elif inbound['protocol'] == 'trojan':

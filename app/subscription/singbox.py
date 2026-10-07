@@ -15,6 +15,9 @@ from config import (
 )
 
 
+from app.xray.transport import portable_hysteria, portable_legacy_stream, supports_vision
+
+
 class SingBoxConfiguration(str):
 
     def __init__(self):
@@ -237,7 +240,7 @@ class SingBoxConfiguration(str):
             "server_port": port,
         }
 
-        if net in ('tcp', 'raw', 'kcp') and headers != 'http' and (tls or tls != 'none'):
+        if net in ('tcp', 'raw') and headers != 'http' and tls in ('tls', 'reality'):
             if flow:
                 config["flow"] = flow
 
@@ -284,12 +287,34 @@ class SingBoxConfiguration(str):
         return config
 
     def add(self, remark: str, address: str, inbound: dict, settings: dict):
+        if inbound["protocol"] == "wireguard":
+            return  # Use Xray JSON or the native WireGuard URI.
+
+        if inbound["protocol"] == "hysteria":
+            portable = portable_hysteria(inbound)
+            if portable is None:
+                return
+            stream, obfs = portable
+            remark = self._remark_validation(remark)
+            outbound = {"type": "hysteria2", "tag": remark, "server": address,
+                        "server_port": inbound["port"], "password": settings["auth"],
+                        "tls": {"enabled": True, "server_name": inbound["sni"],
+                                "insecure": bool(inbound.get("ais"))}}
+            if inbound.get("alpn"):
+                outbound["tls"]["alpn"] = inbound["alpn"].split(",")
+            if obfs:
+                outbound["obfs"] = {"type": "salamander", "password": obfs}
+            self.proxy_remarks.append(remark)
+            self.add_outbound(outbound)
+            return
 
         net = inbound["network"]
         path = inbound["path"]
 
         # not supported by sing-box
-        if net in ("kcp", "splithttp", "xhttp") or (net == "quic" and inbound["header_type"] != "none"):
+        if inbound["protocol"] == "shadowsocks" and (net not in {"raw", "tcp"} or inbound["tls"] != "none"):
+            return
+        if net not in {"raw", "tcp", "ws", "grpc", "httpupgrade"} or (net in {"raw", "tcp"} and inbound["header_type"] == "http") or inbound.get("xray_stream_settings") or inbound.get("xray_protocol_settings") or inbound.get("client_stream", {}).get("finalmask") or not portable_legacy_stream(inbound):
             return
 
         if net in ("grpc", "gun"):

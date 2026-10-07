@@ -262,6 +262,10 @@ class ProxyHost(Base):
     mux_enable = Column(Boolean, nullable=False, default=False, server_default='0')
     fragment_setting = Column(String(100), nullable=True)
     noise_setting = Column(String(2000), nullable=True)
+    xray_stream_settings = Column(JSON, nullable=True)
+    xray_protocol_settings = Column(JSON, nullable=True)
+
+    xray_outbound_settings = Column(JSON, nullable=True)
     random_user_agent = Column(Boolean, nullable=False, default=False, server_default='0')
     use_sni_as_host = Column(Boolean, nullable=False, default=False, server_default="0")
 

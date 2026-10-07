@@ -95,6 +95,13 @@ def modify_hosts(
                 status_code=400, detail=f"Inbound {inbound_tag} doesn't exist"
             )
 
+    from app.xray.transport import CLIENT_PROTOCOL_FIELDS
+    for inbound_tag, hosts in modified_hosts.items():
+        protocol = xray.config.inbounds_by_tag[inbound_tag]["protocol"]
+        for host in hosts:
+            if set(host.xray_protocol_settings or {}) - CLIENT_PROTOCOL_FIELDS[protocol]:
+                raise HTTPException(status_code=400, detail=f"Client protocol options are incompatible with {protocol}")
+
     for inbound_tag, hosts in modified_hosts.items():
         crud.update_hosts(db, inbound_tag, hosts)
 

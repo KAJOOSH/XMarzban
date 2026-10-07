@@ -121,6 +121,8 @@ const getDefaultValues = (): FormType => {
       vless: { id: "", flow: "" },
       vmess: { id: "" },
       trojan: { password: "" },
+      hysteria: { auth: "" },
+      wireguard: { private_key: "" },
       shadowsocks: { password: "", method: "chacha20-ietf-poly1305" },
     },
   };
@@ -160,6 +162,8 @@ const baseSchema = {
       deleteIfEmpty(ins.vmess, "id");
       deleteIfEmpty(ins.vless, "id");
       deleteIfEmpty(ins.trojan, "password");
+      deleteIfEmpty(ins.hysteria, "auth");
+      deleteIfEmpty(ins.wireguard, "private_key");
       deleteIfEmpty(ins.shadowsocks, "password");
       deleteIfEmpty(ins.shadowsocks, "method");
       return ins;
@@ -729,6 +733,8 @@ export const UserDialog: FC<UserDialogProps> = () => {
                         return (
                           <RadioGroup
                             list={[
+                              { title: "wireguard", description: t("userDialog.wireguardDesc") },
+                              { title: "hysteria", description: t("userDialog.hysteriaDesc") },
                               {
                                 title: "vmess",
                                 description: t("userDialog.vmessDesc"),

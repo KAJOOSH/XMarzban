@@ -1,6 +1,7 @@
 import base64
 import random
 import secrets
+from copy import deepcopy
 from collections import defaultdict
 from datetime import datetime as dt
 from datetime import timedelta
@@ -9,6 +10,7 @@ from typing import TYPE_CHECKING, List, Literal, Union
 from jdatetime import date as jd
 
 from app import xray
+from app.xray.transport import select_port
 from app.utils.system import get_public_ip, get_public_ipv6, readable_size
 
 from . import *
@@ -211,6 +213,7 @@ def setup_format_variables(extra_data: dict) -> dict:
     format_variables = defaultdict(
         lambda: "<missing>",
         {
+            "USER_ID": extra_data.get("id"),
             "SERVER_IP": SERVER_IP,
             "SERVER_IPV6": SERVER_IPV6,
             "USERNAME": extra_data.get("username", "{USERNAME}"),
@@ -264,8 +267,10 @@ def process_inbounds_and_tags(
                 continue
 
             format_variables.update({"TRANSPORT": inbound["network"]})
-            host_inbound = inbound.copy()
             for host in xray.hosts.get(tag, []):
+                if not isinstance(conf, V2rayJsonConfig) and (host.get("xray_outbound_settings") or set(host.get("xray_protocol_settings") or {}) - {"encryption"}):
+                    continue  # These fields have no equivalent in portable links/foreign cores.
+                host_inbound = deepcopy(inbound)
                 sni = ""
                 sni_list = host["sni"] or inbound["sni"]
                 if sni_list:
@@ -273,7 +278,7 @@ def process_inbounds_and_tags(
                     sni = random.choice(sni_list).replace("*", salt)
 
                 if sids := inbound.get("sids"):
-                    inbound["sid"] = random.choice(sids)
+                    host_inbound["sid"] = random.choice(sids)
 
                 req_host = ""
                 req_host_list = host["host"] or inbound["host"]
@@ -297,11 +302,11 @@ def process_inbounds_and_tags(
 
                 host_inbound.update(
                     {
-                        "port": host["port"] or inbound["port"],
+                        "port": select_port(host["port"] or inbound["port"]),
                         "sni": sni,
                         "host": req_host,
                         "tls": inbound["tls"] if host["tls"] is None else host["tls"],
-                        "alpn": host["alpn"] if host["alpn"] else None,
+                        "alpn": host["alpn"] or inbound.get("alpn"),
                         "path": path,
                         "fp": host["fingerprint"] or inbound.get("fp", ""),
                         "ais": host["allowinsecure"]
@@ -310,14 +315,22 @@ def process_inbounds_and_tags(
                         "fragment_setting": host["fragment_setting"],
                         "noise_setting": host["noise_setting"],
                         "random_user_agent": host["random_user_agent"],
+                        "xray_stream_settings": host.get("xray_stream_settings"),
+                        "xray_protocol_settings": host.get("xray_protocol_settings"),
+
+                        "xray_outbound_settings": host.get("xray_outbound_settings"),
                     }
                 )
 
+                client_settings = settings.model_dump()
+                if protocol == "wireguard":
+                    from app.xray.wireguard import addresses
+                    client_settings["address"] = addresses(format_variables["USER_ID"])
                 conf.add(
                     remark=host["remark"].format_map(format_variables),
                     address=address.format_map(format_variables),
                     inbound=host_inbound,
-                    settings=settings.model_dump()
+                    settings=client_settings
                 )
 
     return conf.render(reverse=reverse)

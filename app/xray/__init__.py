@@ -63,6 +63,10 @@ def hosts(storage: dict):
                     "noise_setting": host.noise_setting,
                     "random_user_agent": host.random_user_agent,
                     "use_sni_as_host": host.use_sni_as_host,
+                    "xray_stream_settings": host.xray_stream_settings,
+                    "xray_protocol_settings": host.xray_protocol_settings,
+
+                    "xray_outbound_settings": host.xray_outbound_settings,
                 } for host in inbound_hosts if not host.is_disabled
             ]
 

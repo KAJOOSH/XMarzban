@@ -189,5 +189,11 @@
   "usersTable.noUserMatched": "没有找到您搜索的用户",
   "usersTable.status": "状态",
   "usersTable.sortByExpire": "按过期时间排序",
-  "usersTable.total": "总共"
+  "usersTable.total": "总共",
+  "hostsDialog.xray_stream_settings": "Client streamSettings (JSON)",
+  "hostsDialog.xray_protocol_settings": "Client protocol settings (JSON)",
+  "hostsDialog.clientSettingsHelp": "Overrides host fields. Use Xray JSON for complete fidelity. Do not enter server private keys or certificates.",
+  "userDialog.hysteriaDesc": "Hysteria 2 with per-user authentication",
+  "userDialog.wireguardDesc": "Per-user WireGuard keys; peer changes restart the core.",
+  "hostsDialog.xray_outbound_settings": "Client outbound options (JSON)"
 }

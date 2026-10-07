@@ -3,6 +3,7 @@
     "loglevel": "warning"
   },
   "routing": {
+    "domainStrategy": "AsIs",
     "rules": [
       {
         "ip": [
@@ -15,13 +16,6796 @@
   },
   "inbounds": [
     {
-      "tag": "Shadowsocks TCP",
+      "tag": "LOCAL HTTPS",
+      "listen": "127.0.0.1",
+      "port": 12080,
+      "protocol": "http",
+      "settings": {
+        "accounts": [
+          {
+            "user": "local",
+            "pass": "$LOCAL_PROXY_PASSWORD"
+          }
+        ],
+        "allowTransparent": false,
+        "userLevel": 0
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$REALITY_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        }
+      }
+    },
+    {
+      "tag": "VMESS RAW",
       "listen": "0.0.0.0",
-      "port": 1080,
+      "port": 12100,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS RAW TLS",
+      "listen": "0.0.0.0",
+      "port": 12101,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS RAW REALITY",
+      "listen": "0.0.0.0",
+      "port": 12102,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS WS TLS",
+      "listen": "0.0.0.0",
+      "port": 12103,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "wsSettings": {
+          "host": "localhost",
+          "path": "/ws",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "heartbeatPeriod": 30,
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS HTTPUpgrade TLS",
+      "listen": "0.0.0.0",
+      "port": 12104,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "httpupgrade",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "httpupgradeSettings": {
+          "host": "localhost",
+          "path": "/upgrade",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS gRPC TLS",
+      "listen": "0.0.0.0",
+      "port": 12105,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP",
+      "listen": "0.0.0.0",
+      "port": 12106,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS Hysteria TLS",
+      "listen": "0.0.0.0",
+      "port": 12107,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "hysteria",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "hysteriaSettings": {
+          "version": 2,
+          "auth": "$HYSTERIA_TRANSPORT_AUTH",
+          "udpIdleTimeout": 60
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS XHTTP packet-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12108,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS XHTTP stream-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12109,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS XHTTP stream-one TLS",
+      "listen": "0.0.0.0",
+      "port": 12110,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS XHTTP H3 TLS",
+      "listen": "0.0.0.0",
+      "port": 12111,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS XHTTP REALITY",
+      "listen": "0.0.0.0",
+      "port": 12112,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "reality",
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS gRPC REALITY",
+      "listen": "0.0.0.0",
+      "port": 12113,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "reality",
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS RAW",
+      "listen": "0.0.0.0",
+      "port": 12114,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS RAW TLS",
+      "listen": "0.0.0.0",
+      "port": 12115,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS RAW REALITY",
+      "listen": "0.0.0.0",
+      "port": 12116,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS WS TLS",
+      "listen": "0.0.0.0",
+      "port": 12117,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "wsSettings": {
+          "host": "localhost",
+          "path": "/ws",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "heartbeatPeriod": 30,
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS HTTPUpgrade TLS",
+      "listen": "0.0.0.0",
+      "port": 12118,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "httpupgrade",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "httpupgradeSettings": {
+          "host": "localhost",
+          "path": "/upgrade",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS gRPC TLS",
+      "listen": "0.0.0.0",
+      "port": 12119,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP",
+      "listen": "0.0.0.0",
+      "port": 12120,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS Hysteria TLS",
+      "listen": "0.0.0.0",
+      "port": 12121,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "hysteria",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "hysteriaSettings": {
+          "version": 2,
+          "auth": "$HYSTERIA_TRANSPORT_AUTH",
+          "udpIdleTimeout": 60
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS XHTTP packet-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12122,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS XHTTP stream-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12123,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS XHTTP stream-one TLS",
+      "listen": "0.0.0.0",
+      "port": 12124,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS XHTTP H3 TLS",
+      "listen": "0.0.0.0",
+      "port": 12125,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS XHTTP REALITY",
+      "listen": "0.0.0.0",
+      "port": 12126,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "reality",
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS gRPC REALITY",
+      "listen": "0.0.0.0",
+      "port": 12127,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "reality",
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN RAW",
+      "listen": "0.0.0.0",
+      "port": 12128,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN RAW TLS",
+      "listen": "0.0.0.0",
+      "port": 12129,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN RAW REALITY",
+      "listen": "0.0.0.0",
+      "port": 12130,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN WS TLS",
+      "listen": "0.0.0.0",
+      "port": 12131,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "wsSettings": {
+          "host": "localhost",
+          "path": "/ws",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "heartbeatPeriod": 30,
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN HTTPUpgrade TLS",
+      "listen": "0.0.0.0",
+      "port": 12132,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "httpupgrade",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "httpupgradeSettings": {
+          "host": "localhost",
+          "path": "/upgrade",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN gRPC TLS",
+      "listen": "0.0.0.0",
+      "port": 12133,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP",
+      "listen": "0.0.0.0",
+      "port": 12134,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN Hysteria TLS",
+      "listen": "0.0.0.0",
+      "port": 12135,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "hysteria",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "hysteriaSettings": {
+          "version": 2,
+          "auth": "$HYSTERIA_TRANSPORT_AUTH",
+          "udpIdleTimeout": 60
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN XHTTP packet-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12136,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN XHTTP stream-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12137,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN XHTTP stream-one TLS",
+      "listen": "0.0.0.0",
+      "port": 12138,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN XHTTP H3 TLS",
+      "listen": "0.0.0.0",
+      "port": 12139,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN XHTTP REALITY",
+      "listen": "0.0.0.0",
+      "port": 12140,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "reality",
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN gRPC REALITY",
+      "listen": "0.0.0.0",
+      "port": 12141,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "reality",
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS RAW",
+      "listen": "0.0.0.0",
+      "port": 12142,
       "protocol": "shadowsocks",
       "settings": {
         "clients": [],
         "network": "tcp,udp"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS RAW TLS",
+      "listen": "0.0.0.0",
+      "port": 12143,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp,udp"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS RAW REALITY",
+      "listen": "0.0.0.0",
+      "port": 12144,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp,udp"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS WS TLS",
+      "listen": "0.0.0.0",
+      "port": 12145,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "wsSettings": {
+          "host": "localhost",
+          "path": "/ws",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "heartbeatPeriod": 30,
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS HTTPUpgrade TLS",
+      "listen": "0.0.0.0",
+      "port": 12146,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "httpupgrade",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "httpupgradeSettings": {
+          "host": "localhost",
+          "path": "/upgrade",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS gRPC TLS",
+      "listen": "0.0.0.0",
+      "port": 12147,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP",
+      "listen": "0.0.0.0",
+      "port": 12148,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS Hysteria TLS",
+      "listen": "0.0.0.0",
+      "port": 12149,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "hysteria",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "hysteriaSettings": {
+          "version": 2,
+          "auth": "$HYSTERIA_TRANSPORT_AUTH",
+          "udpIdleTimeout": 60
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS XHTTP packet-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12150,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS XHTTP stream-up TLS",
+      "listen": "0.0.0.0",
+      "port": 12151,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS XHTTP stream-one TLS",
+      "listen": "0.0.0.0",
+      "port": 12152,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS XHTTP H3 TLS",
+      "listen": "0.0.0.0",
+      "port": 12153,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-one",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS XHTTP REALITY",
+      "listen": "0.0.0.0",
+      "port": 12154,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "reality",
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "stream-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": false,
+          "xPaddingKey": "x_padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "queryInHeader",
+          "xPaddingMethod": "repeat-x",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "path",
+          "sessionKey": "session",
+          "seqPlacement": "path",
+          "seqKey": "seq",
+          "uplinkDataPlacement": "body",
+          "uplinkDataKey": "data",
+          "uplinkChunkSize": "0",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS gRPC REALITY",
+      "listen": "0.0.0.0",
+      "port": 12155,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "security": "reality",
+        "grpcSettings": {
+          "serviceName": "marzban",
+          "multiMode": false,
+          "authority": "localhost",
+          "idle_timeout": 60,
+          "health_check_timeout": 20,
+          "permit_without_stream": false,
+          "initial_windows_size": 0,
+          "user_agent": "Marzban-Xray"
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "HYSTERIA 2",
+      "listen": "0.0.0.0",
+      "port": 12156,
+      "protocol": "hysteria",
+      "settings": {
+        "version": 2,
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "hysteria",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h3"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "hysteriaSettings": {
+          "version": 2,
+          "udpIdleTimeout": 60
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "LOCAL HTTP",
+      "listen": "127.0.0.1",
+      "port": 12081,
+      "protocol": "http",
+      "settings": {
+        "accounts": [
+          {
+            "user": "local",
+            "pass": "$LOCAL_PROXY_PASSWORD"
+          }
+        ],
+        "userLevel": 0,
+        "allowTransparent": false
+      }
+    },
+    {
+      "tag": "LOCAL SOCKS",
+      "listen": "127.0.0.1",
+      "port": 12082,
+      "protocol": "socks",
+      "settings": {
+        "auth": "password",
+        "accounts": [
+          {
+            "user": "local",
+            "pass": "$LOCAL_PROXY_PASSWORD"
+          }
+        ],
+        "udp": true,
+        "ip": "127.0.0.1",
+        "userLevel": 0
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "LOCAL MIXED",
+      "listen": "127.0.0.1",
+      "port": 12083,
+      "protocol": "mixed",
+      "settings": {
+        "auth": "password",
+        "accounts": [
+          {
+            "user": "local",
+            "pass": "$LOCAL_PROXY_PASSWORD"
+          }
+        ],
+        "udp": true,
+        "ip": "127.0.0.1",
+        "userLevel": 0
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "LOCAL TUNNEL",
+      "listen": "127.0.0.1",
+      "port": 12084,
+      "protocol": "tunnel",
+      "settings": {
+        "address": "127.0.0.1",
+        "port": 18090,
+        "network": "tcp,udp",
+        "followRedirect": false,
+        "userLevel": 0
+      }
+    },
+    {
+      "tag": "LOCAL DOKODEMO-DOOR",
+      "listen": "127.0.0.1",
+      "port": 12085,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "127.0.0.1",
+        "port": 18090,
+        "network": "tcp,udp",
+        "followRedirect": false,
+        "userLevel": 0
+      }
+    },
+    {
+      "tag": "LOCAL WIREGUARD",
+      "listen": "0.0.0.0",
+      "port": 12086,
+      "protocol": "wireguard",
+      "settings": {
+        "secretKey": "$WIREGUARD_PRIVATE_KEY",
+        "address": [
+          "10.77.0.1/32"
+        ],
+        "peers": [
+          {
+            "publicKey": "$WIREGUARD_CLIENT_PUBLIC_KEY",
+            "allowedIPs": [
+              "10.77.0.2/32"
+            ],
+            "keepAlive": 0
+          }
+        ],
+        "mtu": 1420,
+        "workers": 2,
+        "reserved": [
+          0,
+          0,
+          0
+        ],
+        "domainStrategy": "ForceIP",
+        "noKernelTun": true
+      }
+    },
+    {
+      "tag": "LOCAL TUN",
+      "protocol": "tun",
+      "settings": {
+        "name": "marzban0",
+        "MTU": 1500,
+        "userLevel": 0
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP header-srtp",
+      "listen": "0.0.0.0",
+      "port": 12157,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-srtp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP header-utp",
+      "listen": "0.0.0.0",
+      "port": 12158,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-utp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP header-wechat",
+      "listen": "0.0.0.0",
+      "port": 12159,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wechat",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP header-dtls",
+      "listen": "0.0.0.0",
+      "port": 12160,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dtls",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP header-wireguard",
+      "listen": "0.0.0.0",
+      "port": 12161,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wireguard",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP header-dns",
+      "listen": "0.0.0.0",
+      "port": 12162,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dns",
+              "settings": {
+                "domain": "localhost"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP mkcp-original",
+      "listen": "0.0.0.0",
+      "port": 12163,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-original",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP header-custom",
+      "listen": "0.0.0.0",
+      "port": 12164,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-custom",
+              "settings": {
+                "client": [
+                  {
+                    "type": "hex",
+                    "packet": "abcd0123"
+                  }
+                ],
+                "server": [
+                  {
+                    "type": "hex",
+                    "packet": "4567efab"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP salamander",
+      "listen": "0.0.0.0",
+      "port": 12165,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS mKCP noise",
+      "listen": "0.0.0.0",
+      "port": 12166,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "noise",
+              "settings": {
+                "reset": "10-20",
+                "noise": [
+                  {
+                    "type": "hex",
+                    "packet": "9876543210",
+                    "delay": "1-2"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS RAW HTTP HEADER",
+      "listen": "0.0.0.0",
+      "port": 12167,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "http",
+            "request": {
+              "version": "1.1",
+              "method": "GET",
+              "path": [
+                "/raw-header"
+              ],
+              "headers": {
+                "Host": [
+                  "localhost"
+                ],
+                "User-Agent": [
+                  "Marzban-Xray"
+                ]
+              }
+            },
+            "response": {
+              "version": "1.1",
+              "status": "200",
+              "reason": "OK",
+              "headers": {
+                "Content-Type": [
+                  "application/octet-stream"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS XHTTP header TLS",
+      "listen": "0.0.0.0",
+      "port": 12168,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "header",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "header",
+          "sessionKey": "x-session",
+          "seqPlacement": "header",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "header",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS XHTTP cookie TLS",
+      "listen": "0.0.0.0",
+      "port": 12169,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "cookie",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "cookie",
+          "sessionKey": "x-session",
+          "seqPlacement": "cookie",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "cookie",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS RAW TLS ECH",
+      "listen": "0.0.0.0",
+      "port": 12170,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN",
+          "echServerKeys": "$ECH_SERVER_KEYS",
+          "echConfigList": "$ECH_CONFIG_LIST",
+          "echForceQuery": "none"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VMESS RAW REALITY MLDSA65",
+      "listen": "0.0.0.0",
+      "port": 12171,
+      "protocol": "vmess",
+      "settings": {
+        "clients": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000,
+          "mldsa65Seed": "$MLDSA65_SEED",
+          "mldsa65Verify": "$MLDSA65_VERIFY"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP header-srtp",
+      "listen": "0.0.0.0",
+      "port": 12172,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-srtp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP header-utp",
+      "listen": "0.0.0.0",
+      "port": 12173,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-utp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP header-wechat",
+      "listen": "0.0.0.0",
+      "port": 12174,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wechat",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP header-dtls",
+      "listen": "0.0.0.0",
+      "port": 12175,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dtls",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP header-wireguard",
+      "listen": "0.0.0.0",
+      "port": 12176,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wireguard",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP header-dns",
+      "listen": "0.0.0.0",
+      "port": 12177,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dns",
+              "settings": {
+                "domain": "localhost"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP mkcp-original",
+      "listen": "0.0.0.0",
+      "port": 12178,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-original",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP header-custom",
+      "listen": "0.0.0.0",
+      "port": 12179,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-custom",
+              "settings": {
+                "client": [
+                  {
+                    "type": "hex",
+                    "packet": "abcd0123"
+                  }
+                ],
+                "server": [
+                  {
+                    "type": "hex",
+                    "packet": "4567efab"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP salamander",
+      "listen": "0.0.0.0",
+      "port": 12180,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS mKCP noise",
+      "listen": "0.0.0.0",
+      "port": 12181,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "noise",
+              "settings": {
+                "reset": "10-20",
+                "noise": [
+                  {
+                    "type": "hex",
+                    "packet": "9876543210",
+                    "delay": "1-2"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS RAW HTTP HEADER",
+      "listen": "0.0.0.0",
+      "port": 12182,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "http",
+            "request": {
+              "version": "1.1",
+              "method": "GET",
+              "path": [
+                "/raw-header"
+              ],
+              "headers": {
+                "Host": [
+                  "localhost"
+                ],
+                "User-Agent": [
+                  "Marzban-Xray"
+                ]
+              }
+            },
+            "response": {
+              "version": "1.1",
+              "status": "200",
+              "reason": "OK",
+              "headers": {
+                "Content-Type": [
+                  "application/octet-stream"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS XHTTP header TLS",
+      "listen": "0.0.0.0",
+      "port": 12183,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "header",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "header",
+          "sessionKey": "x-session",
+          "seqPlacement": "header",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "header",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS XHTTP cookie TLS",
+      "listen": "0.0.0.0",
+      "port": 12184,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "cookie",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "cookie",
+          "sessionKey": "x-session",
+          "seqPlacement": "cookie",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "cookie",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS RAW TLS ECH",
+      "listen": "0.0.0.0",
+      "port": 12185,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN",
+          "echServerKeys": "$ECH_SERVER_KEYS",
+          "echConfigList": "$ECH_CONFIG_LIST",
+          "echForceQuery": "none"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "VLESS RAW REALITY MLDSA65",
+      "listen": "0.0.0.0",
+      "port": 12186,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none",
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000,
+          "mldsa65Seed": "$MLDSA65_SEED",
+          "mldsa65Verify": "$MLDSA65_VERIFY"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP header-srtp",
+      "listen": "0.0.0.0",
+      "port": 12187,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-srtp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP header-utp",
+      "listen": "0.0.0.0",
+      "port": 12188,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-utp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP header-wechat",
+      "listen": "0.0.0.0",
+      "port": 12189,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wechat",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP header-dtls",
+      "listen": "0.0.0.0",
+      "port": 12190,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dtls",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP header-wireguard",
+      "listen": "0.0.0.0",
+      "port": 12191,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wireguard",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP header-dns",
+      "listen": "0.0.0.0",
+      "port": 12192,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dns",
+              "settings": {
+                "domain": "localhost"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP mkcp-original",
+      "listen": "0.0.0.0",
+      "port": 12193,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-original",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP header-custom",
+      "listen": "0.0.0.0",
+      "port": 12194,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-custom",
+              "settings": {
+                "client": [
+                  {
+                    "type": "hex",
+                    "packet": "abcd0123"
+                  }
+                ],
+                "server": [
+                  {
+                    "type": "hex",
+                    "packet": "4567efab"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP salamander",
+      "listen": "0.0.0.0",
+      "port": 12195,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN mKCP noise",
+      "listen": "0.0.0.0",
+      "port": 12196,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "noise",
+              "settings": {
+                "reset": "10-20",
+                "noise": [
+                  {
+                    "type": "hex",
+                    "packet": "9876543210",
+                    "delay": "1-2"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN RAW HTTP HEADER",
+      "listen": "0.0.0.0",
+      "port": 12197,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "http",
+            "request": {
+              "version": "1.1",
+              "method": "GET",
+              "path": [
+                "/raw-header"
+              ],
+              "headers": {
+                "Host": [
+                  "localhost"
+                ],
+                "User-Agent": [
+                  "Marzban-Xray"
+                ]
+              }
+            },
+            "response": {
+              "version": "1.1",
+              "status": "200",
+              "reason": "OK",
+              "headers": {
+                "Content-Type": [
+                  "application/octet-stream"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN XHTTP header TLS",
+      "listen": "0.0.0.0",
+      "port": 12198,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "header",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "header",
+          "sessionKey": "x-session",
+          "seqPlacement": "header",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "header",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN XHTTP cookie TLS",
+      "listen": "0.0.0.0",
+      "port": 12199,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "cookie",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "cookie",
+          "sessionKey": "x-session",
+          "seqPlacement": "cookie",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "cookie",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN RAW TLS ECH",
+      "listen": "0.0.0.0",
+      "port": 12200,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN",
+          "echServerKeys": "$ECH_SERVER_KEYS",
+          "echConfigList": "$ECH_CONFIG_LIST",
+          "echForceQuery": "none"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "TROJAN RAW REALITY MLDSA65",
+      "listen": "0.0.0.0",
+      "port": 12201,
+      "protocol": "trojan",
+      "settings": {
+        "clients": [],
+        "fallbacks": []
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000,
+          "mldsa65Seed": "$MLDSA65_SEED",
+          "mldsa65Verify": "$MLDSA65_VERIFY"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP header-srtp",
+      "listen": "0.0.0.0",
+      "port": 12202,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-srtp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP header-utp",
+      "listen": "0.0.0.0",
+      "port": 12203,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-utp",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP header-wechat",
+      "listen": "0.0.0.0",
+      "port": 12204,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wechat",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP header-dtls",
+      "listen": "0.0.0.0",
+      "port": 12205,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dtls",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP header-wireguard",
+      "listen": "0.0.0.0",
+      "port": 12206,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-wireguard",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP header-dns",
+      "listen": "0.0.0.0",
+      "port": 12207,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-dns",
+              "settings": {
+                "domain": "localhost"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP mkcp-original",
+      "listen": "0.0.0.0",
+      "port": 12208,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-original",
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP header-custom",
+      "listen": "0.0.0.0",
+      "port": 12209,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "header-custom",
+              "settings": {
+                "client": [
+                  {
+                    "type": "hex",
+                    "packet": "abcd0123"
+                  }
+                ],
+                "server": [
+                  {
+                    "type": "hex",
+                    "packet": "4567efab"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP salamander",
+      "listen": "0.0.0.0",
+      "port": 12210,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "$SALAMANDER_PASSWORD"
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS mKCP noise",
+      "listen": "0.0.0.0",
+      "port": 12211,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "kcp",
+        "security": "none",
+        "kcpSettings": {
+          "mtu": 1350,
+          "tti": 50,
+          "uplinkCapacity": 5,
+          "downlinkCapacity": 20,
+          "congestion": false,
+          "readBufferSize": 2,
+          "writeBufferSize": 2
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "mkcp-aes128gcm",
+              "settings": {
+                "password": "$HYSTERIA_TRANSPORT_AUTH"
+              }
+            },
+            {
+              "type": "noise",
+              "settings": {
+                "reset": "10-20",
+                "noise": [
+                  {
+                    "type": "hex",
+                    "packet": "9876543210",
+                    "delay": "1-2"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS RAW HTTP HEADER",
+      "listen": "0.0.0.0",
+      "port": 12212,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp,udp"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "none",
+        "rawSettings": {
+          "header": {
+            "type": "http",
+            "request": {
+              "version": "1.1",
+              "method": "GET",
+              "path": [
+                "/raw-header"
+              ],
+              "headers": {
+                "Host": [
+                  "localhost"
+                ],
+                "User-Agent": [
+                  "Marzban-Xray"
+                ]
+              }
+            },
+            "response": {
+              "version": "1.1",
+              "status": "200",
+              "reason": "OK",
+              "headers": {
+                "Content-Type": [
+                  "application/octet-stream"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS XHTTP header TLS",
+      "listen": "0.0.0.0",
+      "port": 12213,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "header",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "header",
+          "sessionKey": "x-session",
+          "seqPlacement": "header",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "header",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS XHTTP cookie TLS",
+      "listen": "0.0.0.0",
+      "port": 12214,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN"
+        },
+        "xhttpSettings": {
+          "host": "localhost",
+          "path": "/xhttp",
+          "mode": "packet-up",
+          "headers": {
+            "User-Agent": "chrome"
+          },
+          "xPaddingBytes": "100-1000",
+          "xPaddingObfsMode": true,
+          "xPaddingKey": "padding",
+          "xPaddingHeader": "X-Padding",
+          "xPaddingPlacement": "cookie",
+          "xPaddingMethod": "tokenish",
+          "uplinkHTTPMethod": "POST",
+          "sessionPlacement": "cookie",
+          "sessionKey": "x-session",
+          "seqPlacement": "cookie",
+          "seqKey": "x-seq",
+          "uplinkDataPlacement": "cookie",
+          "uplinkDataKey": "x-data",
+          "uplinkChunkSize": "512-1024",
+          "noGRPCHeader": false,
+          "noSSEHeader": false,
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "scMaxBufferedPosts": 30,
+          "scStreamUpServerSecs": "20-80",
+          "serverMaxHeaderBytes": 65536,
+          "xmux": {
+            "maxConcurrency": "16-32",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 30
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS RAW TLS ECH",
+      "listen": "0.0.0.0",
+      "port": 12215,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp,udp"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "localhost",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "rejectUnknownSni": false,
+          "enableSessionResumption": true,
+          "certificates": [
+            {
+              "certificateFile": "$TLS_CERTIFICATE_FILE",
+              "keyFile": "$TLS_KEY_FILE",
+              "usage": "encipherment",
+              "oneTimeLoading": false,
+              "buildChain": false
+            }
+          ],
+          "pinnedPeerCertSha256": "$TLS_CERT_PIN",
+          "echServerKeys": "$ECH_SERVER_KEYS",
+          "echConfigList": "$ECH_CONFIG_LIST",
+          "echForceQuery": "none"
+        },
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          },
+          "acceptProxyProtocol": false
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
+      }
+    },
+    {
+      "tag": "SHADOWSOCKS RAW REALITY MLDSA65",
+      "listen": "0.0.0.0",
+      "port": 12216,
+      "protocol": "shadowsocks",
+      "settings": {
+        "clients": [],
+        "network": "tcp,udp"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        },
+        "realitySettings": {
+          "show": false,
+          "target": "127.0.0.1:12080",
+          "xver": 0,
+          "serverNames": [
+            "localhost"
+          ],
+          "privateKey": "$REALITY_PRIVATE_KEY",
+          "publicKey": "$REALITY_PUBLIC_KEY",
+          "shortIds": [
+            "0123456789abcdef"
+          ],
+          "maxTimeDiff": 60000,
+          "mldsa65Seed": "$MLDSA65_SEED",
+          "mldsa65Verify": "$MLDSA65_VERIFY"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true,
+        "domainsExcluded": []
       }
     }
   ],

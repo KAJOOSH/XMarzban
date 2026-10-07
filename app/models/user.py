@@ -280,6 +280,7 @@ class UserModify(User):
 
 
 class UserResponse(User):
+    id: Optional[int] = Field(None, exclude=True)
     username: str
     status: UserStatus
     used_traffic: int
@@ -297,7 +298,7 @@ class UserResponse(User):
     def validate_links(self):
         if not self.links:
             self.links = generate_v2ray_links(
-                self.proxies, self.inbounds, extra_data=self.model_dump(), reverse=False,
+                self.proxies, self.inbounds, extra_data={**self.model_dump(), "id": self.id}, reverse=False,
             )
         return self
 

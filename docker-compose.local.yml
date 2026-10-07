@@ -1,0 +1,44 @@
+services:
+  marzban:
+    build:
+      context: .
+      args:
+        XRAY_VERSION: 26.3.27
+    image: marzban-xray:26.3.27-local
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:12080-12086:12080-12086/tcp"
+      - "127.0.0.1:12080-12086:12080-12086/udp"
+      - "127.0.0.1:12100-12216:12100-12216/tcp"
+      - "127.0.0.1:12100-12216:12100-12216/udp"
+    environment:
+      UVICORN_HOST: 0.0.0.0
+      UVICORN_PORT: 8000
+      UVICORN_SSL_CERTFILE: /var/lib/marzban/certs/localhost.crt
+      UVICORN_SSL_KEYFILE: /var/lib/marzban/certs/localhost.key
+      UVICORN_SSL_CA_TYPE: private
+      SQLALCHEMY_DATABASE_URL: sqlite:////var/lib/marzban/db.sqlite3
+      XRAY_JSON: /var/lib/marzban/xray_config.json
+      XRAY_EXECUTABLE_PATH: /usr/local/bin/xray
+      XRAY_ASSETS_PATH: /usr/local/share/xray
+      USE_CUSTOM_JSON_FOR_V2RAYN: "true"
+      USE_CUSTOM_JSON_DEFAULT: "true"
+      XRAY_SUBSCRIPTION_URL_PREFIX: https://localhost:8000
+    volumes:
+      - marzban-local-data:/var/lib/marzban
+    command:
+      - bash
+      - -c
+      - "python scripts/init_xray_defaults.py && alembic upgrade head && exec python main.py"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import ssl,urllib.request; urllib.request.urlopen('https://localhost:8000/', context=ssl.create_default_context(cafile='/var/lib/marzban/certs/localhost.crt'), timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+volumes:
+  marzban-local-data:

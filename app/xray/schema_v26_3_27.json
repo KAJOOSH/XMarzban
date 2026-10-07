@@ -1,0 +1,2277 @@
+{
+  "version": "v26.3.27",
+  "commit": "d2758a023cd7f4174a5a5fa4ff66e487d4342ba0",
+  "kind": "source-field-inventory",
+  "objects": {
+    "SniffingConfig": {
+      "source": "infra/conf/xray.go",
+      "line": 58,
+      "fields": [
+        {
+          "json": "enabled",
+          "go_type": "bool"
+        },
+        {
+          "json": "destOverride",
+          "go_type": "*StringList"
+        },
+        {
+          "json": "domainsExcluded",
+          "go_type": "*StringList"
+        },
+        {
+          "json": "metadataOnly",
+          "go_type": "bool"
+        },
+        {
+          "json": "routeOnly",
+          "go_type": "bool"
+        }
+      ]
+    },
+    "MuxConfig": {
+      "source": "infra/conf/xray.go",
+      "line": 102,
+      "fields": [
+        {
+          "json": "enabled",
+          "go_type": "bool"
+        },
+        {
+          "json": "concurrency",
+          "go_type": "int16"
+        },
+        {
+          "json": "xudpConcurrency",
+          "go_type": "int16"
+        },
+        {
+          "json": "xudpProxyUDP443",
+          "go_type": "string"
+        }
+      ]
+    },
+    "InboundDetourConfig": {
+      "source": "infra/conf/xray.go",
+      "line": 126,
+      "fields": [
+        {
+          "json": "protocol",
+          "go_type": "string"
+        },
+        {
+          "json": "port",
+          "go_type": "*PortList"
+        },
+        {
+          "json": "listen",
+          "go_type": "*Address"
+        },
+        {
+          "json": "settings",
+          "go_type": "*json.RawMessage"
+        },
+        {
+          "json": "tag",
+          "go_type": "string"
+        },
+        {
+          "json": "streamSettings",
+          "go_type": "*StreamConfig"
+        },
+        {
+          "json": "sniffing",
+          "go_type": "*SniffingConfig"
+        }
+      ]
+    },
+    "OutboundDetourConfig": {
+      "source": "infra/conf/xray.go",
+      "line": 213,
+      "fields": [
+        {
+          "json": "protocol",
+          "go_type": "string"
+        },
+        {
+          "json": "sendThrough",
+          "go_type": "*string"
+        },
+        {
+          "json": "tag",
+          "go_type": "string"
+        },
+        {
+          "json": "settings",
+          "go_type": "*json.RawMessage"
+        },
+        {
+          "json": "streamSettings",
+          "go_type": "*StreamConfig"
+        },
+        {
+          "json": "proxySettings",
+          "go_type": "*ProxyConfig"
+        },
+        {
+          "json": "mux",
+          "go_type": "*MuxConfig"
+        },
+        {
+          "json": "targetStrategy",
+          "go_type": "string"
+        }
+      ]
+    },
+    "Config": {
+      "source": "infra/conf/xray.go",
+      "line": 346,
+      "fields": [
+        {
+          "json": "transport",
+          "go_type": "map[string]json.RawMessage"
+        },
+        {
+          "json": "log",
+          "go_type": "*LogConfig"
+        },
+        {
+          "json": "routing",
+          "go_type": "*RouterConfig"
+        },
+        {
+          "json": "dns",
+          "go_type": "*DNSConfig"
+        },
+        {
+          "json": "inbounds",
+          "go_type": "[]InboundDetourConfig"
+        },
+        {
+          "json": "outbounds",
+          "go_type": "[]OutboundDetourConfig"
+        },
+        {
+          "json": "policy",
+          "go_type": "*PolicyConfig"
+        },
+        {
+          "json": "api",
+          "go_type": "*APIConfig"
+        },
+        {
+          "json": "metrics",
+          "go_type": "*MetricsConfig"
+        },
+        {
+          "json": "stats",
+          "go_type": "*StatsConfig"
+        },
+        {
+          "json": "reverse",
+          "go_type": "*ReverseConfig"
+        },
+        {
+          "json": "fakeDns",
+          "go_type": "*FakeDNSConfig"
+        },
+        {
+          "json": "observatory",
+          "go_type": "*ObservatoryConfig"
+        },
+        {
+          "json": "burstObservatory",
+          "go_type": "*BurstObservatoryConfig"
+        },
+        {
+          "json": "version",
+          "go_type": "*VersionConfig"
+        }
+      ]
+    },
+    "SimpleRule": {
+      "source": "infra/conf/xray.go",
+      "line": 680,
+      "fields": [
+        {
+          "json": "ruleTag",
+          "go_type": "string"
+        },
+        {
+          "json": "domain",
+          "go_type": "*StringList"
+        },
+        {
+          "json": "domains",
+          "go_type": "*StringList"
+        }
+      ]
+    },
+    "DokodemoConfig": {
+      "source": "infra/conf/dokodemo.go",
+      "line": 10,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "portMap",
+          "go_type": "map[string]string"
+        },
+        {
+          "json": "network",
+          "go_type": "*NetworkList"
+        },
+        {
+          "json": "followRedirect",
+          "go_type": "bool"
+        },
+        {
+          "json": "userLevel",
+          "go_type": "uint32"
+        }
+      ]
+    },
+    "HTTPAccount": {
+      "source": "infra/conf/http.go",
+      "line": 13,
+      "fields": [
+        {
+          "json": "user",
+          "go_type": "string"
+        },
+        {
+          "json": "pass",
+          "go_type": "string"
+        }
+      ]
+    },
+    "HTTPServerConfig": {
+      "source": "infra/conf/http.go",
+      "line": 25,
+      "fields": [
+        {
+          "json": "accounts",
+          "go_type": "[]*HTTPAccount"
+        },
+        {
+          "json": "allowTransparent",
+          "go_type": "bool"
+        },
+        {
+          "json": "userLevel",
+          "go_type": "uint32"
+        }
+      ]
+    },
+    "HTTPRemoteConfig": {
+      "source": "infra/conf/http.go",
+      "line": 47,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "users",
+          "go_type": "[]json.RawMessage"
+        }
+      ]
+    },
+    "HTTPClientConfig": {
+      "source": "infra/conf/http.go",
+      "line": 53,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "uint32"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "user",
+          "go_type": "string"
+        },
+        {
+          "json": "pass",
+          "go_type": "string"
+        },
+        {
+          "json": "servers",
+          "go_type": "[]*HTTPRemoteConfig"
+        },
+        {
+          "json": "headers",
+          "go_type": "map[string]string"
+        }
+      ]
+    },
+    "SocksAccount": {
+      "source": "infra/conf/socks.go",
+      "line": 13,
+      "fields": [
+        {
+          "json": "user",
+          "go_type": "string"
+        },
+        {
+          "json": "pass",
+          "go_type": "string"
+        }
+      ]
+    },
+    "SocksServerConfig": {
+      "source": "infra/conf/socks.go",
+      "line": 30,
+      "fields": [
+        {
+          "json": "auth",
+          "go_type": "string"
+        },
+        {
+          "json": "accounts",
+          "go_type": "[]*SocksAccount"
+        },
+        {
+          "json": "udp",
+          "go_type": "bool"
+        },
+        {
+          "json": "ip",
+          "go_type": "*Address"
+        },
+        {
+          "json": "userLevel",
+          "go_type": "uint32"
+        }
+      ]
+    },
+    "SocksRemoteConfig": {
+      "source": "infra/conf/socks.go",
+      "line": 66,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "users",
+          "go_type": "[]json.RawMessage"
+        }
+      ]
+    },
+    "SocksClientConfig": {
+      "source": "infra/conf/socks.go",
+      "line": 72,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "uint32"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "user",
+          "go_type": "string"
+        },
+        {
+          "json": "pass",
+          "go_type": "string"
+        },
+        {
+          "json": "servers",
+          "go_type": "[]*SocksRemoteConfig"
+        }
+      ]
+    },
+    "ShadowsocksUserConfig": {
+      "source": "infra/conf/shadowsocks.go",
+      "line": 33,
+      "fields": [
+        {
+          "json": "method",
+          "go_type": "string"
+        },
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "level",
+          "go_type": "byte"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        }
+      ]
+    },
+    "ShadowsocksServerConfig": {
+      "source": "infra/conf/shadowsocks.go",
+      "line": 42,
+      "fields": [
+        {
+          "json": "method",
+          "go_type": "string"
+        },
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "level",
+          "go_type": "byte"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "clients",
+          "go_type": "[]*ShadowsocksUserConfig"
+        },
+        {
+          "json": "network",
+          "go_type": "*NetworkList"
+        }
+      ]
+    },
+    "ShadowsocksServerTarget": {
+      "source": "infra/conf/shadowsocks.go",
+      "line": 161,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "byte"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "method",
+          "go_type": "string"
+        },
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "uot",
+          "go_type": "bool"
+        },
+        {
+          "json": "uotVersion",
+          "go_type": "int"
+        }
+      ]
+    },
+    "ShadowsocksClientConfig": {
+      "source": "infra/conf/shadowsocks.go",
+      "line": 172,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "byte"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "method",
+          "go_type": "string"
+        },
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "uot",
+          "go_type": "bool"
+        },
+        {
+          "json": "uotVersion",
+          "go_type": "int"
+        },
+        {
+          "json": "servers",
+          "go_type": "[]*ShadowsocksServerTarget"
+        }
+      ]
+    },
+    "VMessAccount": {
+      "source": "infra/conf/vmess.go",
+      "line": 17,
+      "fields": [
+        {
+          "json": "id",
+          "go_type": "string"
+        },
+        {
+          "json": "security",
+          "go_type": "string"
+        },
+        {
+          "json": "experiments",
+          "go_type": "string"
+        }
+      ]
+    },
+    "VMessDefaultConfig": {
+      "source": "infra/conf/vmess.go",
+      "line": 49,
+      "fields": [
+        {
+          "json": "level",
+          "go_type": "byte"
+        }
+      ]
+    },
+    "VMessInboundConfig": {
+      "source": "infra/conf/vmess.go",
+      "line": 60,
+      "fields": [
+        {
+          "json": "clients",
+          "go_type": "[]json.RawMessage"
+        },
+        {
+          "json": "default",
+          "go_type": "*VMessDefaultConfig"
+        }
+      ]
+    },
+    "VMessOutboundTarget": {
+      "source": "infra/conf/vmess.go",
+      "line": 99,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "users",
+          "go_type": "[]json.RawMessage"
+        }
+      ]
+    },
+    "VMessOutboundConfig": {
+      "source": "infra/conf/vmess.go",
+      "line": 105,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "uint32"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "id",
+          "go_type": "string"
+        },
+        {
+          "json": "security",
+          "go_type": "string"
+        },
+        {
+          "json": "experiments",
+          "go_type": "string"
+        },
+        {
+          "json": "vnext",
+          "go_type": "[]*VMessOutboundTarget"
+        }
+      ]
+    },
+    "VLessInboundFallback": {
+      "source": "infra/conf/vless.go",
+      "line": 23,
+      "fields": [
+        {
+          "json": "name",
+          "go_type": "string"
+        },
+        {
+          "json": "alpn",
+          "go_type": "string"
+        },
+        {
+          "json": "path",
+          "go_type": "string"
+        },
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "dest",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "xver",
+          "go_type": "uint64"
+        }
+      ]
+    },
+    "VLessInboundConfig": {
+      "source": "infra/conf/vless.go",
+      "line": 32,
+      "fields": [
+        {
+          "json": "clients",
+          "go_type": "[]json.RawMessage"
+        },
+        {
+          "json": "decryption",
+          "go_type": "string"
+        },
+        {
+          "json": "fallbacks",
+          "go_type": "[]*VLessInboundFallback"
+        },
+        {
+          "json": "flow",
+          "go_type": "string"
+        },
+        {
+          "json": "testseed",
+          "go_type": "[]uint32"
+        }
+      ]
+    },
+    "VLessReverseConfig": {
+      "source": "infra/conf/vless.go",
+      "line": 205,
+      "fields": [
+        {
+          "json": "tag",
+          "go_type": "string"
+        },
+        {
+          "json": "sniffing",
+          "go_type": "*SniffingConfig"
+        }
+      ]
+    },
+    "VLessOutboundVnext": {
+      "source": "infra/conf/vless.go",
+      "line": 227,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "users",
+          "go_type": "[]json.RawMessage"
+        }
+      ]
+    },
+    "VLessOutboundConfig": {
+      "source": "infra/conf/vless.go",
+      "line": 233,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "uint32"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "id",
+          "go_type": "string"
+        },
+        {
+          "json": "flow",
+          "go_type": "string"
+        },
+        {
+          "json": "seed",
+          "go_type": "string"
+        },
+        {
+          "json": "encryption",
+          "go_type": "string"
+        },
+        {
+          "json": "reverse",
+          "go_type": "*VLessReverseConfig"
+        },
+        {
+          "json": "testpre",
+          "go_type": "uint32"
+        },
+        {
+          "json": "testseed",
+          "go_type": "[]uint32"
+        },
+        {
+          "json": "vnext",
+          "go_type": "[]*VLessOutboundVnext"
+        }
+      ]
+    },
+    "TrojanServerTarget": {
+      "source": "infra/conf/trojan.go",
+      "line": 20,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "byte"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "flow",
+          "go_type": "string"
+        }
+      ]
+    },
+    "TrojanClientConfig": {
+      "source": "infra/conf/trojan.go",
+      "line": 30,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "level",
+          "go_type": "byte"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "flow",
+          "go_type": "string"
+        },
+        {
+          "json": "servers",
+          "go_type": "[]*TrojanServerTarget"
+        }
+      ]
+    },
+    "TrojanInboundFallback": {
+      "source": "infra/conf/trojan.go",
+      "line": 95,
+      "fields": [
+        {
+          "json": "name",
+          "go_type": "string"
+        },
+        {
+          "json": "alpn",
+          "go_type": "string"
+        },
+        {
+          "json": "path",
+          "go_type": "string"
+        },
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "dest",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "xver",
+          "go_type": "uint64"
+        }
+      ]
+    },
+    "TrojanUserConfig": {
+      "source": "infra/conf/trojan.go",
+      "line": 105,
+      "fields": [
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "level",
+          "go_type": "byte"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        },
+        {
+          "json": "flow",
+          "go_type": "string"
+        }
+      ]
+    },
+    "TrojanServerConfig": {
+      "source": "infra/conf/trojan.go",
+      "line": 113,
+      "fields": [
+        {
+          "json": "clients",
+          "go_type": "[]*TrojanUserConfig"
+        },
+        {
+          "json": "fallbacks",
+          "go_type": "[]*TrojanInboundFallback"
+        }
+      ]
+    },
+    "WireGuardPeerConfig": {
+      "source": "infra/conf/wireguard.go",
+      "line": 13,
+      "fields": [
+        {
+          "json": "publicKey",
+          "go_type": "string"
+        },
+        {
+          "json": "preSharedKey",
+          "go_type": "string"
+        },
+        {
+          "json": "endpoint",
+          "go_type": "string"
+        },
+        {
+          "json": "keepAlive",
+          "go_type": "uint32"
+        },
+        {
+          "json": "allowedIPs",
+          "go_type": "[]string"
+        }
+      ]
+    },
+    "WireGuardConfig": {
+      "source": "infra/conf/wireguard.go",
+      "line": 51,
+      "fields": [
+        {
+          "json": "noKernelTun",
+          "go_type": "bool"
+        },
+        {
+          "json": "secretKey",
+          "go_type": "string"
+        },
+        {
+          "json": "address",
+          "go_type": "[]string"
+        },
+        {
+          "json": "peers",
+          "go_type": "[]*WireGuardPeerConfig"
+        },
+        {
+          "json": "mtu",
+          "go_type": "int32"
+        },
+        {
+          "json": "workers",
+          "go_type": "int32"
+        },
+        {
+          "json": "reserved",
+          "go_type": "[]byte"
+        },
+        {
+          "json": "domainStrategy",
+          "go_type": "string"
+        }
+      ]
+    },
+    "HysteriaClientConfig": {
+      "source": "infra/conf/hysteria.go",
+      "line": 12,
+      "fields": [
+        {
+          "json": "version",
+          "go_type": "int32"
+        },
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        }
+      ]
+    },
+    "HysteriaUserConfig": {
+      "source": "infra/conf/hysteria.go",
+      "line": 33,
+      "fields": [
+        {
+          "json": "auth",
+          "go_type": "string"
+        },
+        {
+          "json": "level",
+          "go_type": "uint32"
+        },
+        {
+          "json": "email",
+          "go_type": "string"
+        }
+      ]
+    },
+    "HysteriaServerConfig": {
+      "source": "infra/conf/hysteria.go",
+      "line": 39,
+      "fields": [
+        {
+          "json": "version",
+          "go_type": "int32"
+        },
+        {
+          "json": "clients",
+          "go_type": "[]*HysteriaUserConfig"
+        }
+      ]
+    },
+    "TunConfig": {
+      "source": "infra/conf/tun.go",
+      "line": 8,
+      "fields": [
+        {
+          "json": "name",
+          "go_type": "string"
+        },
+        {
+          "json": "MTU",
+          "go_type": "uint32"
+        },
+        {
+          "json": "userLevel",
+          "go_type": "uint32"
+        }
+      ]
+    },
+    "KCPConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 55,
+      "fields": [
+        {
+          "json": "mtu",
+          "go_type": "*uint32"
+        },
+        {
+          "json": "tti",
+          "go_type": "*uint32"
+        },
+        {
+          "json": "uplinkCapacity",
+          "go_type": "*uint32"
+        },
+        {
+          "json": "downlinkCapacity",
+          "go_type": "*uint32"
+        },
+        {
+          "json": "congestion",
+          "go_type": "*bool"
+        },
+        {
+          "json": "readBufferSize",
+          "go_type": "*uint32"
+        },
+        {
+          "json": "writeBufferSize",
+          "go_type": "*uint32"
+        },
+        {
+          "json": "header",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "seed",
+          "go_type": "*string"
+        }
+      ]
+    },
+    "TCPConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 117,
+      "fields": [
+        {
+          "json": "header",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "acceptProxyProtocol",
+          "go_type": "bool"
+        }
+      ]
+    },
+    "WebSocketConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 142,
+      "fields": [
+        {
+          "json": "host",
+          "go_type": "string"
+        },
+        {
+          "json": "path",
+          "go_type": "string"
+        },
+        {
+          "json": "headers",
+          "go_type": "map[string]string"
+        },
+        {
+          "json": "acceptProxyProtocol",
+          "go_type": "bool"
+        },
+        {
+          "json": "heartbeatPeriod",
+          "go_type": "uint32"
+        }
+      ]
+    },
+    "HttpUpgradeConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 184,
+      "fields": [
+        {
+          "json": "host",
+          "go_type": "string"
+        },
+        {
+          "json": "path",
+          "go_type": "string"
+        },
+        {
+          "json": "headers",
+          "go_type": "map[string]string"
+        },
+        {
+          "json": "acceptProxyProtocol",
+          "go_type": "bool"
+        }
+      ]
+    },
+    "SplitHTTPConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 220,
+      "fields": [
+        {
+          "json": "host",
+          "go_type": "string"
+        },
+        {
+          "json": "path",
+          "go_type": "string"
+        },
+        {
+          "json": "mode",
+          "go_type": "string"
+        },
+        {
+          "json": "headers",
+          "go_type": "map[string]string"
+        },
+        {
+          "json": "xPaddingBytes",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "xPaddingObfsMode",
+          "go_type": "bool"
+        },
+        {
+          "json": "xPaddingKey",
+          "go_type": "string"
+        },
+        {
+          "json": "xPaddingHeader",
+          "go_type": "string"
+        },
+        {
+          "json": "xPaddingPlacement",
+          "go_type": "string"
+        },
+        {
+          "json": "xPaddingMethod",
+          "go_type": "string"
+        },
+        {
+          "json": "uplinkHTTPMethod",
+          "go_type": "string"
+        },
+        {
+          "json": "sessionPlacement",
+          "go_type": "string"
+        },
+        {
+          "json": "sessionKey",
+          "go_type": "string"
+        },
+        {
+          "json": "seqPlacement",
+          "go_type": "string"
+        },
+        {
+          "json": "seqKey",
+          "go_type": "string"
+        },
+        {
+          "json": "uplinkDataPlacement",
+          "go_type": "string"
+        },
+        {
+          "json": "uplinkDataKey",
+          "go_type": "string"
+        },
+        {
+          "json": "uplinkChunkSize",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "noGRPCHeader",
+          "go_type": "bool"
+        },
+        {
+          "json": "noSSEHeader",
+          "go_type": "bool"
+        },
+        {
+          "json": "scMaxEachPostBytes",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "scMinPostsIntervalMs",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "scMaxBufferedPosts",
+          "go_type": "int64"
+        },
+        {
+          "json": "scStreamUpServerSecs",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "serverMaxHeaderBytes",
+          "go_type": "int32"
+        },
+        {
+          "json": "xmux",
+          "go_type": "XmuxConfig"
+        },
+        {
+          "json": "downloadSettings",
+          "go_type": "*StreamConfig"
+        },
+        {
+          "json": "extra",
+          "go_type": "json.RawMessage"
+        }
+      ]
+    },
+    "XmuxConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 251,
+      "fields": [
+        {
+          "json": "maxConcurrency",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "maxConnections",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "cMaxReuseTimes",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "hMaxRequestTimes",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "hMaxReusableSecs",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "hKeepAlivePeriod",
+          "go_type": "int64"
+        }
+      ]
+    },
+    "UdpHop": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 503,
+      "fields": [
+        {
+          "json": "ports",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "interval",
+          "go_type": "*Int32Range"
+        }
+      ]
+    },
+    "Masquerade": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 508,
+      "fields": [
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "dir",
+          "go_type": "string"
+        },
+        {
+          "json": "url",
+          "go_type": "string"
+        },
+        {
+          "json": "rewriteHost",
+          "go_type": "bool"
+        },
+        {
+          "json": "insecure",
+          "go_type": "bool"
+        },
+        {
+          "json": "content",
+          "go_type": "string"
+        },
+        {
+          "json": "headers",
+          "go_type": "map[string]string"
+        },
+        {
+          "json": "statusCode",
+          "go_type": "int32"
+        }
+      ]
+    },
+    "HysteriaConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 522,
+      "fields": [
+        {
+          "json": "version",
+          "go_type": "int32"
+        },
+        {
+          "json": "auth",
+          "go_type": "string"
+        },
+        {
+          "json": "congestion",
+          "go_type": "*string"
+        },
+        {
+          "json": "up",
+          "go_type": "*Bandwidth"
+        },
+        {
+          "json": "down",
+          "go_type": "*Bandwidth"
+        },
+        {
+          "json": "udphop",
+          "go_type": "*UdpHop"
+        },
+        {
+          "json": "udpIdleTimeout",
+          "go_type": "int64"
+        },
+        {
+          "json": "masquerade",
+          "go_type": "Masquerade"
+        }
+      ]
+    },
+    "TLSCertConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 578,
+      "fields": [
+        {
+          "json": "certificateFile",
+          "go_type": "string"
+        },
+        {
+          "json": "certificate",
+          "go_type": "[]string"
+        },
+        {
+          "json": "keyFile",
+          "go_type": "string"
+        },
+        {
+          "json": "key",
+          "go_type": "[]string"
+        },
+        {
+          "json": "usage",
+          "go_type": "string"
+        },
+        {
+          "json": "ocspStapling",
+          "go_type": "uint64"
+        },
+        {
+          "json": "oneTimeLoading",
+          "go_type": "bool"
+        },
+        {
+          "json": "buildChain",
+          "go_type": "bool"
+        }
+      ]
+    },
+    "QuicParamsConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 630,
+      "fields": [
+        {
+          "json": "congestion",
+          "go_type": "string"
+        },
+        {
+          "json": "debug",
+          "go_type": "bool"
+        },
+        {
+          "json": "brutalUp",
+          "go_type": "Bandwidth"
+        },
+        {
+          "json": "brutalDown",
+          "go_type": "Bandwidth"
+        },
+        {
+          "json": "udpHop",
+          "go_type": "UdpHop"
+        },
+        {
+          "json": "initStreamReceiveWindow",
+          "go_type": "uint64"
+        },
+        {
+          "json": "maxStreamReceiveWindow",
+          "go_type": "uint64"
+        },
+        {
+          "json": "initConnectionReceiveWindow",
+          "go_type": "uint64"
+        },
+        {
+          "json": "maxConnectionReceiveWindow",
+          "go_type": "uint64"
+        },
+        {
+          "json": "maxIdleTimeout",
+          "go_type": "int64"
+        },
+        {
+          "json": "keepAlivePeriod",
+          "go_type": "int64"
+        },
+        {
+          "json": "disablePathMTUDiscovery",
+          "go_type": "bool"
+        },
+        {
+          "json": "maxIncomingStreams",
+          "go_type": "int64"
+        }
+      ]
+    },
+    "TLSConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 646,
+      "fields": [
+        {
+          "json": "allowInsecure",
+          "go_type": "bool"
+        },
+        {
+          "json": "certificates",
+          "go_type": "[]*TLSCertConfig"
+        },
+        {
+          "json": "serverName",
+          "go_type": "string"
+        },
+        {
+          "json": "alpn",
+          "go_type": "*StringList"
+        },
+        {
+          "json": "enableSessionResumption",
+          "go_type": "bool"
+        },
+        {
+          "json": "disableSystemRoot",
+          "go_type": "bool"
+        },
+        {
+          "json": "minVersion",
+          "go_type": "string"
+        },
+        {
+          "json": "maxVersion",
+          "go_type": "string"
+        },
+        {
+          "json": "cipherSuites",
+          "go_type": "string"
+        },
+        {
+          "json": "fingerprint",
+          "go_type": "string"
+        },
+        {
+          "json": "rejectUnknownSni",
+          "go_type": "bool"
+        },
+        {
+          "json": "curvePreferences",
+          "go_type": "*StringList"
+        },
+        {
+          "json": "masterKeyLog",
+          "go_type": "string"
+        },
+        {
+          "json": "pinnedPeerCertSha256",
+          "go_type": "string"
+        },
+        {
+          "json": "verifyPeerCertByName",
+          "go_type": "string"
+        },
+        {
+          "json": "verifyPeerCertInNames",
+          "go_type": "[]string"
+        },
+        {
+          "json": "echServerKeys",
+          "go_type": "string"
+        },
+        {
+          "json": "echConfigList",
+          "go_type": "string"
+        },
+        {
+          "json": "echForceQuery",
+          "go_type": "string"
+        },
+        {
+          "json": "echSockopt",
+          "go_type": "*SocketConfig"
+        }
+      ]
+    },
+    "REALITYConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 780,
+      "fields": [
+        {
+          "json": "masterKeyLog",
+          "go_type": "string"
+        },
+        {
+          "json": "show",
+          "go_type": "bool"
+        },
+        {
+          "json": "target",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "dest",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "xver",
+          "go_type": "uint64"
+        },
+        {
+          "json": "serverNames",
+          "go_type": "[]string"
+        },
+        {
+          "json": "privateKey",
+          "go_type": "string"
+        },
+        {
+          "json": "minClientVer",
+          "go_type": "string"
+        },
+        {
+          "json": "maxClientVer",
+          "go_type": "string"
+        },
+        {
+          "json": "maxTimeDiff",
+          "go_type": "uint64"
+        },
+        {
+          "json": "shortIds",
+          "go_type": "[]string"
+        },
+        {
+          "json": "mldsa65Seed",
+          "go_type": "string"
+        },
+        {
+          "json": "limitFallbackUpload",
+          "go_type": "LimitFallback"
+        },
+        {
+          "json": "limitFallbackDownload",
+          "go_type": "LimitFallback"
+        },
+        {
+          "json": "fingerprint",
+          "go_type": "string"
+        },
+        {
+          "json": "serverName",
+          "go_type": "string"
+        },
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "publicKey",
+          "go_type": "string"
+        },
+        {
+          "json": "shortId",
+          "go_type": "string"
+        },
+        {
+          "json": "mldsa65Verify",
+          "go_type": "string"
+        },
+        {
+          "json": "spiderX",
+          "go_type": "string"
+        }
+      ]
+    },
+    "CustomSockoptConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1026,
+      "fields": [
+        {
+          "json": "system",
+          "go_type": "string"
+        },
+        {
+          "json": "network",
+          "go_type": "string"
+        },
+        {
+          "json": "level",
+          "go_type": "string"
+        },
+        {
+          "json": "opt",
+          "go_type": "string"
+        },
+        {
+          "json": "value",
+          "go_type": "string"
+        },
+        {
+          "json": "type",
+          "go_type": "string"
+        }
+      ]
+    },
+    "HappyEyeballsConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1035,
+      "fields": [
+        {
+          "json": "prioritizeIPv6",
+          "go_type": "bool"
+        },
+        {
+          "json": "tryDelayMs",
+          "go_type": "uint64"
+        },
+        {
+          "json": "interleave",
+          "go_type": "uint32"
+        },
+        {
+          "json": "maxConcurrentTry",
+          "go_type": "uint32"
+        }
+      ]
+    },
+    "SocketConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1059,
+      "fields": [
+        {
+          "json": "mark",
+          "go_type": "int32"
+        },
+        {
+          "json": "tcpFastOpen",
+          "go_type": "interface{}"
+        },
+        {
+          "json": "tproxy",
+          "go_type": "string"
+        },
+        {
+          "json": "acceptProxyProtocol",
+          "go_type": "bool"
+        },
+        {
+          "json": "domainStrategy",
+          "go_type": "string"
+        },
+        {
+          "json": "dialerProxy",
+          "go_type": "string"
+        },
+        {
+          "json": "tcpKeepAliveInterval",
+          "go_type": "int32"
+        },
+        {
+          "json": "tcpKeepAliveIdle",
+          "go_type": "int32"
+        },
+        {
+          "json": "tcpCongestion",
+          "go_type": "string"
+        },
+        {
+          "json": "tcpWindowClamp",
+          "go_type": "int32"
+        },
+        {
+          "json": "tcpMaxSeg",
+          "go_type": "int32"
+        },
+        {
+          "json": "penetrate",
+          "go_type": "bool"
+        },
+        {
+          "json": "tcpUserTimeout",
+          "go_type": "int32"
+        },
+        {
+          "json": "v6only",
+          "go_type": "bool"
+        },
+        {
+          "json": "interface",
+          "go_type": "string"
+        },
+        {
+          "json": "tcpMptcp",
+          "go_type": "bool"
+        },
+        {
+          "json": "customSockopt",
+          "go_type": "[]*CustomSockoptConfig"
+        },
+        {
+          "json": "addressPortStrategy",
+          "go_type": "string"
+        },
+        {
+          "json": "happyEyeballs",
+          "go_type": "*HappyEyeballsConfig"
+        },
+        {
+          "json": "trustedXForwardedFor",
+          "go_type": "[]string"
+        }
+      ]
+    },
+    "TCPItem": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1262,
+      "fields": [
+        {
+          "json": "delay",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "rand",
+          "go_type": "int32"
+        },
+        {
+          "json": "randRange",
+          "go_type": "*Int32Range"
+        },
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "packet",
+          "go_type": "json.RawMessage"
+        }
+      ]
+    },
+    "HeaderCustomTCP": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1270,
+      "fields": [
+        {
+          "json": "clients",
+          "go_type": "[][]TCPItem"
+        },
+        {
+          "json": "servers",
+          "go_type": "[][]TCPItem"
+        },
+        {
+          "json": "errors",
+          "go_type": "[][]TCPItem"
+        }
+      ]
+    },
+    "FragmentMask": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1383,
+      "fields": [
+        {
+          "json": "packets",
+          "go_type": "string"
+        },
+        {
+          "json": "length",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "delay",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "maxSplit",
+          "go_type": "Int32Range"
+        }
+      ]
+    },
+    "NoiseItem": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1427,
+      "fields": [
+        {
+          "json": "rand",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "randRange",
+          "go_type": "*Int32Range"
+        },
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "packet",
+          "go_type": "json.RawMessage"
+        },
+        {
+          "json": "delay",
+          "go_type": "Int32Range"
+        }
+      ]
+    },
+    "NoiseMask": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1435,
+      "fields": [
+        {
+          "json": "reset",
+          "go_type": "Int32Range"
+        },
+        {
+          "json": "noise",
+          "go_type": "[]NoiseItem"
+        }
+      ]
+    },
+    "UDPItem": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1477,
+      "fields": [
+        {
+          "json": "rand",
+          "go_type": "int32"
+        },
+        {
+          "json": "randRange",
+          "go_type": "*Int32Range"
+        },
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "packet",
+          "go_type": "json.RawMessage"
+        }
+      ]
+    },
+    "HeaderCustomUDP": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1484,
+      "fields": [
+        {
+          "json": "client",
+          "go_type": "[]UDPItem"
+        },
+        {
+          "json": "server",
+          "go_type": "[]UDPItem"
+        }
+      ]
+    },
+    "Dns": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1547,
+      "fields": [
+        {
+          "json": "domain",
+          "go_type": "string"
+        }
+      ]
+    },
+    "Aes128Gcm": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1598,
+      "fields": [
+        {
+          "json": "password",
+          "go_type": "string"
+        }
+      ]
+    },
+    "Salamander": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1608,
+      "fields": [
+        {
+          "json": "password",
+          "go_type": "string"
+        }
+      ]
+    },
+    "Sudoku": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1618,
+      "fields": [
+        {
+          "json": "password",
+          "go_type": "string"
+        },
+        {
+          "json": "ascii",
+          "go_type": "string"
+        },
+        {
+          "json": "customTable",
+          "go_type": "string"
+        },
+        {
+          "json": "custom_table",
+          "go_type": "string"
+        },
+        {
+          "json": "customTables",
+          "go_type": "[]string"
+        },
+        {
+          "json": "custom_tables",
+          "go_type": "[]string"
+        },
+        {
+          "json": "paddingMin",
+          "go_type": "uint32"
+        },
+        {
+          "json": "padding_min",
+          "go_type": "uint32"
+        },
+        {
+          "json": "paddingMax",
+          "go_type": "uint32"
+        },
+        {
+          "json": "padding_max",
+          "go_type": "uint32"
+        }
+      ]
+    },
+    "Xdns": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1662,
+      "fields": [
+        {
+          "json": "domain",
+          "go_type": "string"
+        }
+      ]
+    },
+    "Xicmp": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1676,
+      "fields": [
+        {
+          "json": "listenIp",
+          "go_type": "string"
+        },
+        {
+          "json": "id",
+          "go_type": "uint16"
+        }
+      ]
+    },
+    "Mask": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1694,
+      "fields": [
+        {
+          "json": "type",
+          "go_type": "string"
+        },
+        {
+          "json": "settings",
+          "go_type": "*json.RawMessage"
+        }
+      ]
+    },
+    "FinalMask": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1720,
+      "fields": [
+        {
+          "json": "tcp",
+          "go_type": "[]Mask"
+        },
+        {
+          "json": "udp",
+          "go_type": "[]Mask"
+        },
+        {
+          "json": "quicParams",
+          "go_type": "*QuicParamsConfig"
+        }
+      ]
+    },
+    "StreamConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1726,
+      "fields": [
+        {
+          "json": "address",
+          "go_type": "*Address"
+        },
+        {
+          "json": "port",
+          "go_type": "uint16"
+        },
+        {
+          "json": "network",
+          "go_type": "*TransportProtocol"
+        },
+        {
+          "json": "security",
+          "go_type": "string"
+        },
+        {
+          "json": "finalmask",
+          "go_type": "*FinalMask"
+        },
+        {
+          "json": "tlsSettings",
+          "go_type": "*TLSConfig"
+        },
+        {
+          "json": "realitySettings",
+          "go_type": "*REALITYConfig"
+        },
+        {
+          "json": "rawSettings",
+          "go_type": "*TCPConfig"
+        },
+        {
+          "json": "tcpSettings",
+          "go_type": "*TCPConfig"
+        },
+        {
+          "json": "xhttpSettings",
+          "go_type": "*SplitHTTPConfig"
+        },
+        {
+          "json": "splithttpSettings",
+          "go_type": "*SplitHTTPConfig"
+        },
+        {
+          "json": "kcpSettings",
+          "go_type": "*KCPConfig"
+        },
+        {
+          "json": "grpcSettings",
+          "go_type": "*GRPCConfig"
+        },
+        {
+          "json": "wsSettings",
+          "go_type": "*WebSocketConfig"
+        },
+        {
+          "json": "httpupgradeSettings",
+          "go_type": "*HttpUpgradeConfig"
+        },
+        {
+          "json": "hysteriaSettings",
+          "go_type": "*HysteriaConfig"
+        },
+        {
+          "json": "sockopt",
+          "go_type": "*SocketConfig"
+        }
+      ]
+    },
+    "ProxyConfig": {
+      "source": "infra/conf/transport_internet.go",
+      "line": 1990,
+      "fields": [
+        {
+          "json": "tag",
+          "go_type": "string"
+        },
+        {
+          "json": "transportLayer",
+          "go_type": "bool"
+        }
+      ]
+    },
+    "AuthenticatorRequest": {
+      "source": "infra/conf/transport_authenticators.go",
+      "line": 19,
+      "fields": [
+        {
+          "json": "version",
+          "go_type": "string"
+        },
+        {
+          "json": "method",
+          "go_type": "string"
+        },
+        {
+          "json": "path",
+          "go_type": "StringList"
+        },
+        {
+          "json": "headers",
+          "go_type": "map[string]*StringList"
+        }
+      ]
+    },
+    "AuthenticatorResponse": {
+      "source": "infra/conf/transport_authenticators.go",
+      "line": 120,
+      "fields": [
+        {
+          "json": "version",
+          "go_type": "string"
+        },
+        {
+          "json": "status",
+          "go_type": "string"
+        },
+        {
+          "json": "reason",
+          "go_type": "string"
+        },
+        {
+          "json": "headers",
+          "go_type": "map[string]*StringList"
+        }
+      ]
+    },
+    "Authenticator": {
+      "source": "infra/conf/transport_authenticators.go",
+      "line": 188,
+      "fields": [
+        {
+          "json": "request",
+          "go_type": "AuthenticatorRequest"
+        },
+        {
+          "json": "response",
+          "go_type": "AuthenticatorResponse"
+        }
+      ]
+    },
+    "GRPCConfig": {
+      "source": "infra/conf/grpc.go",
+      "line": 8,
+      "fields": [
+        {
+          "json": "authority",
+          "go_type": "string"
+        },
+        {
+          "json": "serviceName",
+          "go_type": "string"
+        },
+        {
+          "json": "multiMode",
+          "go_type": "bool"
+        },
+        {
+          "json": "idle_timeout",
+          "go_type": "int32"
+        },
+        {
+          "json": "health_check_timeout",
+          "go_type": "int32"
+        },
+        {
+          "json": "permit_without_stream",
+          "go_type": "bool"
+        },
+        {
+          "json": "initial_windows_size",
+          "go_type": "int32"
+        },
+        {
+          "json": "user_agent",
+          "go_type": "string"
+        }
+      ]
+    }
+  }
+}

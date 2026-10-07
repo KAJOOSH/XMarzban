@@ -32,6 +32,7 @@ import {
   Portal,
   Switch,
   Text,
+  Textarea,
   Tooltip,
   VStack,
   chakra,
@@ -124,6 +125,18 @@ const InfoIcon = chakra(InformationCircleIcon, {
   },
 });
 
+const clientJson = z.any().transform((value, ctx) => {
+  if (value == null || value === "") return null;
+  try {
+    const parsed = typeof value === "string" ? JSON.parse(value) : value;
+    if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") throw new globalThis.Error("Expected object");
+    return parsed;
+  } catch {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Enter a valid JSON object" });
+    return z.NEVER;
+  }
+});
+
 const hostsSchema = z.record(
   z.string().min(1),
   z.array(
@@ -153,6 +166,9 @@ const hostsSchema = z.record(
       alpn: z.string(),
       fingerprint: z.string(),
       use_sni_as_host: z.boolean().default(false),
+      xray_stream_settings: clientJson,
+      xray_protocol_settings: clientJson,
+      xray_outbound_settings: clientJson,
     })
   )
 );
@@ -214,6 +230,9 @@ const AccordionInbound: FC<AccordionInboundType> = ({
       alpn: "",
       fingerprint: "",
       use_sni_as_host: false,
+      xray_stream_settings: null,
+      xray_protocol_settings: null,
+      xray_outbound_settings: null,
     });
   };
   const duplicateHost = (index: number) => {
@@ -1174,6 +1193,20 @@ const AccordionInbound: FC<AccordionInboundType> = ({
                                 </Error>
                               )}
                           </FormControl>
+                          {(["xray_stream_settings", "xray_protocol_settings", "xray_outbound_settings"] as const).map((setting) => (
+                            <FormControl key={setting} isInvalid={!!accordionErrors?.[index]?.[setting]}>
+                              <FormLabel>{t("hostsDialog." + setting)}</FormLabel>
+                              <Controller control={form.control} name={hostKey + "." + index + "." + setting}
+                                render={({ field }) => (
+                                  <Textarea dir="ltr" fontFamily="monospace" rows={6} spellCheck={false}
+                                    aria-label={t("hostsDialog." + setting)}
+                                    value={typeof field.value === "string" ? field.value : field.value ? JSON.stringify(field.value, null, 2) : ""}
+                                    onChange={(event) => field.onChange(event.target.value)} onBlur={field.onBlur} ref={field.ref} />
+                                )} />
+                              <Text fontSize="xs">{t("hostsDialog.clientSettingsHelp")}</Text>
+                              <Error>{accordionErrors?.[index]?.[setting]?.message as string}</Error>
+                            </FormControl>
+                          ))}
                         </VStack>
                       </AccordionPanel>
                     </AccordionItem>

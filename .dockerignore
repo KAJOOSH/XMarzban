@@ -10,6 +10,7 @@
 .idea
 .venv
 .vscode
+.vs
 Dockerfile*
 __pycache__
 db.sqlite3
@@ -18,3 +19,8 @@ docker-compose*.yml
 v2ray-core
 venv
 xray-core
+
+local-admin.json
+
+output/xray/
+output/server-configs-354/
