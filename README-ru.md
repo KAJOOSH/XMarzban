@@ -18,8 +18,8 @@
     <a href="#">
         <img src="https://img.shields.io/github/actions/workflow/status/gozargah/marzban/build.yml?style=flat-square" />
     </a>
-    <a href="https://hub.docker.com/r/gozargah/marzban" target="_blank">
-        <img src="https://img.shields.io/docker/pulls/gozargah/marzban?style=flat-square&logo=docker" />
+    <a href="https://hub.docker.com/r/kajoosh/xmarzban" target="_blank">
+        <img src="https://img.shields.io/docker/pulls/kajoosh/xmarzban?style=flat-square&logo=docker" />
     </a>
     <a href="#">
         <img src="https://img.shields.io/github/license/gozargah/marzban?style=flat-square" />
