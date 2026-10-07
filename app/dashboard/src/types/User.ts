@@ -48,6 +48,7 @@ export type User = {
   used_traffic: number;
   status: Status;
   links: string[];
+  use_custom_json?: boolean;
   subscription_url: string;
   inbounds: UserInbounds;
   note: string;

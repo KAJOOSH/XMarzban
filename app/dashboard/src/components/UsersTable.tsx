@@ -645,6 +645,11 @@ const ActionButtons: FC<ActionButtonsProps> = ({ user }) => {
   const copyConfigs = async () => {
     setCopyingConfigs(true);
     try {
+      if (!user.use_custom_json) {
+        await navigator.clipboard.writeText(user.links.join("\r\n"));
+        setCopied([1, true]);
+        return;
+      }
       const url = new URL(user.subscription_url, window.location.origin);
       url.pathname = url.pathname.replace(/\/$/, "") + "/v2ray-json";
       const response = await fetch(url.toString());

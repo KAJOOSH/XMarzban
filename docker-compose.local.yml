@@ -27,7 +27,7 @@ services:
       XRAY_EXECUTABLE_PATH: /usr/local/bin/xray
       XRAY_ASSETS_PATH: /usr/local/share/xray
       USE_CUSTOM_JSON_FOR_V2RAYN: "true"
-      USE_CUSTOM_JSON_DEFAULT: "true"
+      USE_CUSTOM_JSON_DEFAULT: "false"
       XRAY_SUBSCRIPTION_URL_PREFIX: https://localhost:8000
     volumes:
       - marzban-local-data:/var/lib/marzban

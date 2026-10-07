@@ -92,6 +92,7 @@
         {% endif %}</p>
 
     {% if user.status == 'active' %}
+    {% if custom_json %}
     <h2>Full Xray configurations: <span id="config-count">{{ configs | length }}</span></h2>
     <p>Copy or download the full JSON to keep all transport and client settings.</p>
     <button id="copy-configs" type="button">Copy configs ({{ configs | length }})</button>
@@ -109,6 +110,10 @@
     </ul>
     <details>
     <summary>Legacy URI links ({{ user.links | length }}, limited settings)</summary>
+    {% else %}
+    <h2>Links: <span id="link-count">{{ user.links | length }}</span></h2>
+    <button id="copy-links" type="button">Copy configs ({{ user.links | length }})</button>
+    {% endif %}
     <ul>
         {% for link in user.links %}
         <li>
@@ -118,7 +123,7 @@
         </li>
         {% endfor %}
     </ul>
-    </details>
+    {% if custom_json %}</details>{% endif %}
     <div class="qr-popup" id="qrPopup">
         <div class="qr-close-button">
             <button onclick="closeQrPopup()">X</button>
@@ -128,6 +133,7 @@
     {% endif %}
 
     <script>
+        {% if custom_json %}
         const fullConfigs = {{ configs | tojson }};
         async function copyConfigJson(value, button) {
             const label = button.textContent;
@@ -145,6 +151,19 @@
         document.querySelectorAll('.copy-config').forEach(button => {
             button.addEventListener('click', () => copyConfigJson(fullConfigs[Number(button.dataset.index)], button));
         });
+        {% else %}
+        const rawLinks = {{ user.links | tojson }};
+        document.getElementById('copy-links')?.addEventListener('click', async function () {
+            const label = this.textContent;
+            try {
+                await navigator.clipboard.writeText(rawLinks.join('\r\n'));
+                this.textContent = 'Copied!';
+            } catch (error) {
+                this.textContent = 'Copy failed';
+            }
+            setTimeout(() => { this.textContent = label; }, 2000);
+        });
+        {% endif %}
         function copyLink(link, button) {
             const tempInput = document.createElement('input');
             tempInput.setAttribute('value', link);

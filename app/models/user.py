@@ -4,14 +4,14 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator, model_validator
 
 from app import xray
 from app.models.admin import Admin
 from app.models.proxy import ProxySettings, ProxyTypes
 from app.subscription.share import generate_v2ray_links
 from app.utils.jwt import create_subscription_token
-from config import XRAY_SUBSCRIPTION_PATH, XRAY_SUBSCRIPTION_URL_PREFIX
+from config import XRAY_SUBSCRIPTION_PATH, XRAY_SUBSCRIPTION_URL_PREFIX, USE_CUSTOM_JSON_DEFAULT
 
 USERNAME_REGEXP = re.compile(r"^(?=\w{3,32}\b)[a-zA-Z0-9-_@.]+(?:_[a-zA-Z0-9-_@.]+)*$")
 
@@ -293,6 +293,11 @@ class UserResponse(User):
 
     admin: Optional[Admin] = None
     model_config = ConfigDict(from_attributes=True)
+
+    @computed_field
+    @property
+    def use_custom_json(self) -> bool:
+        return USE_CUSTOM_JSON_DEFAULT
 
     @model_validator(mode="after")
     def validate_links(self):

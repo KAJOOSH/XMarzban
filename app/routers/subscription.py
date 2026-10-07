@@ -64,9 +64,10 @@ def user_subscription(
                 SUBSCRIPTION_PAGE_TEMPLATE,
                 {
                     "user": user,
+                    "custom_json": USE_CUSTOM_JSON_DEFAULT,
                     "configs": json.loads(generate_subscription(
                         user=user, config_format="v2ray-json", as_base64=False, reverse=False
-                    )),
+                    )) if USE_CUSTOM_JSON_DEFAULT else [],
                     "json_url": str(request.url).split("?")[0].rstrip("/") + "/v2ray-json",
                 }
             )

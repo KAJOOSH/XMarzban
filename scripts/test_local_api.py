@@ -68,13 +68,23 @@ try:
     configs = call('GET',sub + '/v2ray-json').json()
     assert len(configs) == expected_count, len(configs)
     browser_page = call('GET',sub,headers={'Accept':'text/html','User-Agent':'Mozilla/5.0'}).text
-    assert f'id="config-count">{expected_count}</span>' in browser_page
-    assert browser_page.count('class="full-config"') == expected_count
-    script_configs = json.loads(browser_page.split('const fullConfigs = ',1)[1].split(';\n',1)[0])
-    assert len(script_configs) == expected_count
-    assert sorted(c['remarks'] for c in script_configs) == sorted(c['remarks'] for c in configs)
-    if os.environ.get('USE_CUSTOM_JSON_DEFAULT', '').lower() == 'true':
+    custom_json = os.environ.get('USE_CUSTOM_JSON_DEFAULT', '').lower() == 'true'
+    assert user['use_custom_json'] == custom_json
+    if custom_json:
+        assert f'id="config-count">{expected_count}</span>' in browser_page
+        assert browser_page.count('class="full-config"') == expected_count
+        script_configs = json.loads(browser_page.split('const fullConfigs = ',1)[1].split(';\n',1)[0])
+        assert len(script_configs) == expected_count
+        assert sorted(c['remarks'] for c in script_configs) == sorted(c['remarks'] for c in configs)
         assert len(call('GET',sub,headers={'Accept':'*/*','User-Agent':'Mozilla/5.0'}).json()) == expected_count
+    else:
+        assert 'class="full-config"' not in browser_page and 'const fullConfigs' not in browser_page
+        assert 'Download Xray JSON' not in browser_page
+        assert f'id="link-count">{len(user["links"])}</span>' in browser_page
+        raw_links = json.loads(browser_page.split('const rawLinks = ',1)[1].split(';\n',1)[0])
+        assert raw_links == user['links']
+        body = call('GET',sub,headers={'Accept':'*/*','User-Agent':'Mozilla/5.0'}).text
+        assert base64.b64decode(body).decode().splitlines() == user['links']
     for config in configs:
         encoded = json.dumps(config)
         assert 'privateKey' not in encoded and 'keyFile' not in encoded and 'echServerKeys' not in encoded
